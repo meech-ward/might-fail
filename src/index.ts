@@ -1,3 +1,5 @@
-export * from "./Either"
-export * from "./mightFail"
-export * from "./makeMightFail"
+import Either from "./Either"
+import mightFail from "./mightFail"
+import makeMightFail from "./makeMightFail"
+
+export { Either, mightFail, makeMightFail }
