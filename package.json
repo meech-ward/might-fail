@@ -9,7 +9,7 @@
   ],
   "author": "Sam Meech-Ward <sam@meech-ward.me> (https://smw.wtf)",
   "license": "MIT",
-  
+  "keywords": ["either", "error", "exception", "fail", "failure", "maybe", "result", "success", "try", "typescript"],
   "devDependencies": {
     "typescript": "^5.0.4"
   }
