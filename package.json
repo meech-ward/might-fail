@@ -8,7 +8,8 @@
     "/dist"
   ],
   "author": "Sam Meech-Ward <sam@meech-ward.me> (https://smw.wtf)",
-  "license": "ISC",
+  "license": "MIT",
+  
   "devDependencies": {
     "typescript": "^5.0.4"
   }
