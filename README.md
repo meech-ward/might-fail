@@ -163,7 +163,7 @@ posts!.map((post) => console.log(post.title));
 
 Declaring the variable ahead of time is a little weird and it makes infering the type of the variable a little more difficult. Also, try catch finally blocks can be confusing.
 
-### Try Catch Finally can be confusing ❌
+### `try` `catch` `finally` can be confusing ❌
 
 ```ts
 function something() {
