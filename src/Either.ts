@@ -15,11 +15,4 @@ type Either<T> =
       error: undefined;
     }>;
 
-// export type SafeParseReturnType<Input, Output> =
-//   | SafeParseSuccess<Output>
-//   | SafeParseError<Input>;
-
-// export type SafeParseSuccess<Output> = { success: true; data: Output };
-// export type SafeParseError<Input> = { success: false; error: ZodError<Input> };
-
 export default Either;
