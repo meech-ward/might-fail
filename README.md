@@ -20,7 +20,7 @@ if (error) {
   return;
 }
 
-const posts = result.data!
+const posts = result.data
 posts.map((post) => console.log(post.title));
 ```
 
@@ -48,7 +48,7 @@ if (convertToJSONError) {
   return;
 }
 
-posts!.map((post) => console.log(post.title));
+posts.map((post) => console.log(post.title));
 ```
 
 ### Or Wrap Async Function in `makeMightFail`
@@ -62,7 +62,7 @@ if (error) {
   return;
 }
 
-const posts = result.data!
+const posts = result.data
 posts.map((post) => console.log(post.title));
 ```
 
@@ -106,7 +106,7 @@ if (convertToJSONError) {
 }
 
 // success case, unnested and at the bottom of the function
-posts!.map((post) => console.log(post.title));
+posts.map((post) => console.log(post.title));
 ```
 
 The success case is now the only code that is not nested in an `if` statement. It's also at the very bottom of the function making it easy to find.
@@ -123,7 +123,7 @@ try {
   }
   const posts = await response.json();
 
-  posts!.map((post) => console.log(post.title));
+  posts.map((post) => console.log(post.title));
 } catch (error) {
   // handle any errors, not sure which one though 🤷‍♀️
 }
@@ -158,7 +158,7 @@ try {
   return;
 }
 
-posts!.map((post) => console.log(post.title));
+posts.map((post) => console.log(post.title));
 ```
 
 Declaring the variable ahead of time is a little weird and it makes infering the type of the variable a little more difficult. Also, try catch finally blocks can be confusing.

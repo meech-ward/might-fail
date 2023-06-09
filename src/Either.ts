@@ -5,9 +5,21 @@
  *
  * @template T The type of the result value.
  */
-type Either<T> = Promise<{
-  error?: Error
-  result?: T
-}>
+type Either<T> =
+  | Promise<{
+      error: Error;
+      result: undefined;
+    }>
+  | Promise<{
+      result: T;
+      error: undefined;
+    }>;
 
-export default Either
+// export type SafeParseReturnType<Input, Output> =
+//   | SafeParseSuccess<Output>
+//   | SafeParseError<Input>;
+
+// export type SafeParseSuccess<Output> = { success: true; data: Output };
+// export type SafeParseError<Input> = { success: false; error: ZodError<Input> };
+
+export default Either;
