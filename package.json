@@ -4,13 +4,29 @@
   "description": "Return an Either object instead of throwing an exception",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest"
+  },
   "files": [
     "/dist"
   ],
   "author": "Sam Meech-Ward <sam@meech-ward.me> (https://smw.wtf)",
   "license": "MIT",
-  "keywords": ["either", "error", "exception", "fail", "failure", "maybe", "result", "success", "try", "typescript"],
+  "keywords": [
+    "either",
+    "error",
+    "exception",
+    "fail",
+    "failure",
+    "maybe",
+    "result",
+    "success",
+    "try",
+    "typescript"
+  ],
   "devDependencies": {
-    "typescript": "^5.0.4"
+    "typescript": "^5.0.4",
+    "vitest": "^0.32.0"
   }
 }
