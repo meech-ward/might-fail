@@ -1,14 +1,14 @@
 # Might Fail
 
-A TypeScript library for handling async errors without `try` and `catch` blocks. Inspired by other languages that utilize Result or Either types for safer error handling.
+A TypeScript library for handling async and sync errors without `try` and `catch` blocks. Inspired by other languages that utilize Result or Either types for safer error handling. The following examples are verbose to show how you would handle different types of errors differently instead of just catching all errors together and handling them in the same way. However, you can use `mightFail` to handle all errors in the same way if you want.
 
-## Quick Start
-
-### Install
+## Install
 
 ```
 npm install might-fail
 ```
+
+## Async
 
 ### Wrap Promise in `mightFail`
 
@@ -64,6 +64,37 @@ if (error) {
 
 const posts = result.data
 posts.map((post) => console.log(post.title));
+```
+
+## Sync
+
+
+### Wrap throwing functions in `mightFailSync`
+
+```ts
+const {error, result} = mightFailSync(() => JSON.parse("")); // JSON.parse might throw
+if (error) {
+  console.error('Parsing failed:', error);
+  return
+}
+console.log('Parsed object:', result);
+```
+
+### Or Wrap Sync Function in `makeMightFailSync`
+
+```ts
+function parseJSON(jsonString: string) {
+  return JSON.parse(jsonString); // This might throw
+}
+const safeParseJSON = makeMightFailSync(parseJSON);
+
+const { error, result } = safeParseJSON("");
+
+if (error) {
+  console.error("Parsing failed:", error);
+  return;
+}
+console.log("Parsed object:", result);
 ```
 
 ---

@@ -6,13 +6,13 @@
  * @template T The type of the result value.
  */
 type Either<T> =
-  | Promise<{
+  | {
       error: Error;
       result: undefined;
-    }>
-  | Promise<{
+    }
+  | {
       result: T;
       error: undefined;
-    }>;
+    };
 
 export default Either;
