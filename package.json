@@ -1,13 +1,14 @@
 {
   "name": "might-fail",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "Return an Either object instead of throwing an exception",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   
   "scripts": {
     "build": "tsc",
-    "test": "vitest"
+    "test": "vitest",
+    "publish": "npm run build && npm publish"
   },
   "files": [
     "/dist"

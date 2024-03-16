@@ -1,30 +1,87 @@
 import Either from "./Either";
-import mightFail from "./mightFail";
+import {mightFail, mightFailSync} from "./mightFail";
 
 /**
- * Utility type that unwraps a Promise type. If T is a Promise, it extracts the type the Promise resolves to.
+ * Utility type that unwraps a Promise type. If T is a Promise, it extracts the type the Promise resolves to,
+ * providing direct access to the underlying value type.
  *
  * @template T The type to be unwrapped if it's a Promise.
  */
 type UnwrapPromise<T> = T extends Promise<infer U> ? U : T;
 
 /**
- * Wraps a promise-returning function in a function that returns an Either. This function takes a function
- * which returns a Promise, and returns a new function that when called, will return an Either.
+ * Wraps a promise-returning function in another function that instead of returning a Promise directly,
+ * returns a Promise that resolves with an Either. This allows for the handling of both resolved values and
+ * errors in a consistent, functional way.
  *
  * @export
- * @template T The type of the function to be wrapped.
- * @param {T} func The function to be wrapped.
- * @return {(...funcArgs: Parameters<T>) => Either<UnwrapPromise<ReturnType<T>>>}
- * A new function that takes the same arguments as the original function, but returns an Either.
+ * @template T The function type that returns a Promise.
+ * @param {T} func - The async function to be wrapped. This function should return a Promise.
+ * @return {Function} A new function that, when called, returns a Promise that resolves with an Either object.
+ * The Either object contains either a 'result' with the resolved value of the original Promise, or an 'error' if the Promise was rejected.
+ *
+ * @example
+ * // Example of wrapping an async function that might fail:
+ * async function fetchData(url: string): Promise<string> {
+ *   const response = await fetch(url);
+ *   if (!response.ok) {
+ *     throw new Error('Network response was not ok');
+ *   }
+ *   return response.text();
+ * }
+ *
+ * const safeFetchData = makeMightFail(fetchData);
+ * const {error, result} = await safeFetchData('https://example.com');
+ *
+ * if (error) {
+ *   console.error('Fetching failed:', error.message);
+ *   return 
+ * } 
+ * console.log('Fetched data:', result);
  */
-export default function makeMightFail<
+export function makeMightFail<
   T extends (...args: any[]) => Promise<any>
 >(
   func: T
-): (...funcArgs: Parameters<T>) => Either<UnwrapPromise<ReturnType<T>>> {
+): (...funcArgs: Parameters<T>) => Promise<Either<UnwrapPromise<ReturnType<T>>>> {
   return async (...args: Parameters<T>) => {
     const promise = func(...args);
     return mightFail(promise);
+  };
+}
+
+/**
+ * Wraps a synchronous function that might throw an exception in another function that,
+ * instead of throwing, returns an Either object. This object contains either a 'result'
+ * with the value returned by the function if it executes successfully, or an 'error' if the function throws.
+ *
+ * @export
+ * @template T The function type that might throw an error.
+ * @param {T} func - The function to be wrapped. This function might throw an exception.
+ * @return {Function} A new function that, when called, returns an Either object with either a 'result' or an 'error'.
+ *
+ * @example
+ * // Example of wrapping a synchronous function that might throw an error:
+ * function parseJSON(jsonString: string) {
+ *   return JSON.parse(jsonString); // This might throw
+ * }
+ *
+ * const safeParseJSON = makeMightFailSync(parseJSON);
+ * const {error, result} = safeParseJSON('{"valid": "json"}');
+ *
+ * if (error) {
+ *   console.error('Parsing failed:', error);
+ *   return;
+ * }
+ * console.log('Parsed object:', result);
+ */
+export function makeMightFailSync<
+  T extends (...args: any[]) => any
+>(
+  func: T
+): (...funcArgs: Parameters<T>) => Either<ReturnType<T>> {
+  return (...args: Parameters<T>) => {
+    const throwingFunction = () => func(...args);
+    return mightFailSync(throwingFunction);
   };
 }
