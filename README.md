@@ -2,12 +2,6 @@
 
 A TypeScript library for handling async and sync errors without `try` and `catch` blocks. Inspired by other languages that utilize Result or Either types for safer error handling. The following examples are verbose to show how you would handle different types of errors differently instead of just catching all errors together and handling them in the same way. However, you can use `mightFail` to handle all errors in the same way if you want.
 
-## Install
-
-```
-npm install might-fail
-```
-
 ## Async
 
 ### Wrap Promise in `mightFail`
