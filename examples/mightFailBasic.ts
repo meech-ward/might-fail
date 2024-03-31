@@ -1,4 +1,4 @@
-import mightFail from "../src/mightFail";
+import { mightFail } from "../src/mightFail";
 
 async function main() {
   const { error, result } = await mightFail(

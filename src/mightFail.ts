@@ -1,4 +1,4 @@
-import Either from "./Either";
+import { type Either } from "./Either";
 
 /**
  * Wraps a promise in an Either to safely handle both its resolution and rejection. This function

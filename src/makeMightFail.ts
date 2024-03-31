@@ -1,5 +1,5 @@
-import Either from "./Either";
-import {mightFail, mightFailSync} from "./mightFail";
+import { type Either } from "./Either";
+import { mightFail, mightFailSync } from "./mightFail";
 
 /**
  * Utility type that unwraps a Promise type. If T is a Promise, it extracts the type the Promise resolves to,
@@ -35,15 +35,15 @@ type UnwrapPromise<T> = T extends Promise<infer U> ? U : T;
  *
  * if (error) {
  *   console.error('Fetching failed:', error.message);
- *   return 
- * } 
+ *   return
+ * }
  * console.log('Fetched data:', result);
  */
-export function makeMightFail<
-  T extends (...args: any[]) => Promise<any>
->(
+export function makeMightFail<T extends (...args: any[]) => Promise<any>>(
   func: T
-): (...funcArgs: Parameters<T>) => Promise<Either<UnwrapPromise<ReturnType<T>>>> {
+): (
+  ...funcArgs: Parameters<T>
+) => Promise<Either<UnwrapPromise<ReturnType<T>>>> {
   return async (...args: Parameters<T>) => {
     const promise = func(...args);
     return mightFail(promise);
@@ -75,9 +75,7 @@ export function makeMightFail<
  * }
  * console.log('Parsed object:', result);
  */
-export function makeMightFailSync<
-  T extends (...args: any[]) => any
->(
+export function makeMightFailSync<T extends (...args: any[]) => any>(
   func: T
 ): (...funcArgs: Parameters<T>) => Either<ReturnType<T>> {
   return (...args: Parameters<T>) => {

@@ -1,6 +1,6 @@
-import makeMightFail from "../src/makeMightFail";
+import { makeMightFail } from "../src/makeMightFail";
 
-const resolve = (value: {message: string}) => Promise.resolve(value);
+const resolve = (value: { message: string }) => Promise.resolve(value);
 async function main() {
   const func = makeMightFail(resolve);
   const { error, result } = await func({ message: "success" });

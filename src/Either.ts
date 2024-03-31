@@ -5,7 +5,7 @@
  *
  * @template T The type of the result value.
  */
-type Either<T> =
+export type Either<T> =
   | {
       error: Error;
       result: undefined;
@@ -14,5 +14,3 @@ type Either<T> =
       result: T;
       error: undefined;
     };
-
-export default Either;
