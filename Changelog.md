@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.4.0] - 2024-09-29
+
+### Added
+- `/go` folder for a Go-style tuple implementation. `const [result, error] = mightFail(promise)`
+- `/tuple` folder for a tuple implementation. `const [error, result] = mightFail(promise)`
+
+### Changed
+- If a function throws a string, the string will be the message of the new Error object.
+- If a function throws an object with a message property, the message will be the message of the new Error object.
+- If a function throws an object it will be passed to the Error object constructor as is.
+
 ## [0.3.0] - 2024-03-16
 
 ### Added

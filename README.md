@@ -1,6 +1,41 @@
 # Might Fail
 
-A TypeScript library for handling async and sync errors without `try` and `catch` blocks. Inspired by other languages that utilize Result or Either types for safer error handling. The following examples are verbose to show how you would handle different types of errors differently instead of just catching all errors together and handling them in the same way. However, you can use `mightFail` to handle all errors in the same way if you want.
+A TypeScript library for handling async and sync errors without `try` and `catch` blocks. Inspired by other languages that utilize Result or Either types for safer error handling. 
+
+This works for sync and async code, and you can choose the error handling style that you like.
+
+Scroll to the bottom for the motivation section (why `try,catch,finally` blocks are bad).
+
+## Style 
+
+There's three different styles to choose from and they all work the same way, but you can choose your favorite API. 
+
+All examples are in the default style, but you **can** use any of the three styles.
+
+### Default 
+
+```ts
+import { mightFail } from "might-fail"; // from "@might/fail"
+
+const { error, result } = await mightFail(promise);
+```
+
+### Tuple Style
+
+```ts
+import { mightFail } from "might-fail/tuple"; // from "@might/fail/tuple"
+
+const [error, result] = await mightFail(promise);
+```
+
+### Go Style
+
+```ts
+import { mightFail } from "might-fail/go"; // from "@might/fail/go"
+
+const [result, error] = await mightFail(promise);
+```
+
 
 ## Async
 
