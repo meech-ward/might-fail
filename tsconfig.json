@@ -1,9 +1,16 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
-    "target": "es6",
+    "target": "es2018",
+    "module": "esnext",
+    "lib": ["es2018", "dom"],
     "declaration": true,
-    "outDir": "./dist"
+    "declarationMap": true,
+    "sourceMap": true,
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "strict": true,
+    "esModuleInterop": true,
+    "moduleResolution": "node"
   },
   "include": [
     "src/**/*"

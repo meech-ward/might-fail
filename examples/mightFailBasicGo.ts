@@ -1,7 +1,7 @@
-import { mightFail } from "../src";
+import { mightFail } from "../src/go";
 
 async function main() {
-  const { error, result } = await mightFail(
+  const [error, result] = await mightFail(
     Promise.resolve({ message: "success" })
   );
   if (error) {

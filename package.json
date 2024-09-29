@@ -1,16 +1,35 @@
 {
   "name": "might-fail",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "Return an Either object instead of throwing an exception",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/cjs/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./tuple": {
+      "import": "./dist/tuple/index.js",
+      "require": "./dist/cjs/tuple/index.js",
+      "types": "./dist/tuple/index.d.ts"
+    },
+    "./go": {
+      "import": "./dist/go/index.js",
+      "require": "./dist/cjs/go/index.js",
+      "types": "./dist/go/index.d.ts"
+    }
+  },
   "scripts": {
-    "build": "tsc",
+    "build": "npm run build:esm && npm run build:cjs",
+    "build:esm": "tsc",
+    "build:cjs": "tsc --project tsconfig.cjs.json",
     "test": "vitest",
     "publish": "npm run build && npm publish"
   },
   "files": [
-    "/dist"
+    "dist"
   ],
   "author": "Sam Meech-Ward <sam@meech-ward.me> (https://smw.wtf)",
   "license": "MIT",
@@ -19,6 +38,8 @@
     "url": "git+https://github.com/meech-ward/might-fail.git"
   },
   "keywords": [
+    "mightfail",
+    "might fail",
     "either",
     "error",
     "exception",
@@ -31,7 +52,7 @@
     "typescript"
   ],
   "devDependencies": {
-    "typescript": "^5.0.4",
-    "vitest": "^0.32.0"
+    "typescript": "^5.6.2",
+    "vitest": "^2.1.1"
   }
 }

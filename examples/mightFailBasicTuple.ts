@@ -1,7 +1,7 @@
-import { mightFail } from "../src";
+import { mightFail } from "../src/tuple";
 
 async function main() {
-  const { error, result } = await mightFail(
+  const [result, error] = await mightFail(
     Promise.resolve({ message: "success" })
   );
   if (error) {
