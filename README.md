@@ -6,6 +6,13 @@ This works for sync and async code, and you can choose the error handling style 
 
 Scroll to the bottom for the motivation section (why `try,catch,finally` blocks are bad).
 
+## Install
+
+[![JSR](https://jsr.io/badges/@might/fail)](https://jsr.io/@might/fail)
+[![npm version](https://img.shields.io/npm/v/might-fail.svg)](https://www.npmjs.com/package/might-fail)
+
+
+
 ## Style 
 
 There's three different styles to choose from and they all work the same way, but you can choose your favorite API. 
