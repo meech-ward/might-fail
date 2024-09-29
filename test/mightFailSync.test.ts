@@ -27,3 +27,11 @@ test("fail without error returns an error", async () => {
   expect(result).toBe(undefined);
   expect(error?.message).toBeTruthy();
 });
+
+test("fail with string returns an error with that string as the message", async () => {
+  const { error, result } = await mightFailSync(() => {
+    throw "a fit";
+  });
+  expect(result).toBe(undefined);
+  expect(error?.message).toBe("a fit");
+});

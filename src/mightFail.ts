@@ -1,4 +1,5 @@
 import { type Either } from "./Either";
+import { handleError } from "./utils";
 
 /**
  * Wraps a promise in an Either to safely handle both its resolution and rejection. This function
@@ -36,11 +37,9 @@ export async function mightFail<T>(promise: Promise<T>): Promise<Either<T>> {
   try {
     const result = await promise;
     return { error: undefined, result };
-  } catch (error) {
-    if (error instanceof Error) {
-      return { error, result: undefined };
-    }
-    return { error: new Error("Unknown error"), result: undefined };
+  } catch (err) {
+    const error = handleError(err);
+    return { error, result: undefined };
   }
 }
 
@@ -72,13 +71,8 @@ export function mightFailSync<T>(func: () => T): Either<T> {
   try {
     const result = func();
     return { error: undefined, result };
-  } catch (error) {
-    if (error instanceof Error) {
-      return { error, result: undefined };
-    }
-    return {
-      error: new Error("Unknown error: " + error.toString()),
-      result: undefined,
-    };
+  } catch (err) {
+    const error = handleError(err);
+    return { error, result: undefined };
   }
 }
