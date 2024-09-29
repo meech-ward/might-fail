@@ -1,5 +1,6 @@
 {
   "name": "@might/fail",
   "version": "0.4.1",
-  "exports": "./src/index.ts"
+  "exports": "./src/index.ts",
+  "license": "MIT"
 }
