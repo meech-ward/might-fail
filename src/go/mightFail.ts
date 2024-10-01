@@ -65,3 +65,51 @@ export function mightFailSync<T>(func: () => T): Either<T> {
   return error ? [undefined, error] : [result, undefined];
 }
 
+/**
+ * Wraps a Promise.all call in an Either tuple.
+ *
+ * @template T The type of the resolved values.
+ * @param {Iterable<T | PromiseLike<T>>} values An iterable of promises.
+ * @return {Promise<Either<T[]>>} A Promise that resolves with an Either tuple. If successful, it resolves as
+ * [T[], undefined]. If any promise fails, it returns [undefined, Error] where the error is the first rejection.
+ */
+mightFail.all = function<T>(values: Iterable<T | PromiseLike<T>>): Promise<Either<T[]>> {
+  return mightFail(Promise.all(values));
+};
+
+/**
+ * Wraps a Promise.race call in an Either tuple.
+ *
+ * @template T The type of the resolved values.
+ * @param {Iterable<T | PromiseLike<T>>} values An iterable of promises.
+ * @return {Promise<Either<T>>} A Promise that resolves with an Either tuple. If successful, it resolves as
+ * [T, undefined]. If the first promise fails, it returns [undefined, Error].
+ */
+mightFail.race = function<T>(values: Iterable<T | PromiseLike<T>>): Promise<Either<T>> {
+  return mightFail(Promise.race(values));
+};
+
+/**
+ * Wraps a Promise.allSettled call in an Either tuple.
+ *
+ * @template T The type of the resolved values.
+ * @param {Iterable<T | PromiseLike<T>>} values An iterable of promises.
+ * @return {Promise<Either<PromiseSettledResult<T>[]>>} A Promise that resolves with an Either tuple.
+ * Since Promise.allSettled never rejects, the tuple will always be [PromiseSettledResult<T>[], undefined].
+ */
+mightFail.allSettled = function<T>(values: Iterable<T | PromiseLike<T>>): Promise<Either<PromiseSettledResult<T>[]>> {
+  return mightFail(Promise.allSettled(values));
+};
+
+/**
+ * Wraps a Promise.any call in an Either tuple.
+ *
+ * @template T The type of the resolved values.
+ * @param {Iterable<T | PromiseLike<T>>} values An iterable of promises.
+ * @return {Promise<Either<T>>} A Promise that resolves with an Either tuple. If successful, it resolves as
+ * [T, undefined]. If all promises fail, it returns [undefined, Error] where the error is an AggregateError.
+ */
+mightFail.any = function<T>(values: Iterable<T | PromiseLike<T>>): Promise<Either<T>> {
+  return mightFail(Promise.any(values));
+};
+

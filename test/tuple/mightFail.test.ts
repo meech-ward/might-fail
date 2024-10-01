@@ -1,4 +1,4 @@
-import { expect, test } from "vitest";
+import {describe, expect, it, test} from "vitest";
 import { mightFail } from "../../src/tuple/index";
 
 test("success returns the response", async () => {
@@ -57,3 +57,69 @@ test("promise that rejects after delay", async () => {
   expect(result).toBe(undefined);
   expect(error?.message).toBe("delayed error");
 });
+
+describe('promise concurrent method wrappers', () => {
+  describe('mightFail.all', () => {
+    it('should resolve with all values when all promises succeed', async () => {
+      const promises = [Promise.resolve(1), Promise.resolve(2), Promise.resolve(3)];
+      const [error, result] = await mightFail.all(promises);
+      expect(error).toBeUndefined();
+      expect(result).toEqual([1, 2, 3]);
+    });
+
+    it('should return an error if any promise fails', async () => {
+      const promises = [Promise.resolve(1), Promise.reject(new Error('Test Error')), Promise.resolve(3)];
+      const [error, result] = await mightFail.all(promises);
+      expect(result).toBeUndefined();
+      expect(error).toBeInstanceOf(Error);
+      expect(error!.message).toBe('Test Error');
+    });
+  });
+
+  describe('mightFail.race', () => {
+    it('should resolve with the first resolved value', async () => {
+      const promises = [Promise.resolve(42), new Promise(resolve => setTimeout(() => resolve(100), 100))];
+      const [error, result] = await mightFail.race(promises);
+      expect(error).toBeUndefined();
+      expect(result).toBe(42);
+    });
+
+    it('should return an error if the first promise to settle is a rejection', async () => {
+      const promises = [Promise.reject(new Error('Race Error')), Promise.resolve(100)];
+      const [error, result] = await mightFail.race(promises);
+      expect(result).toBeUndefined();
+      expect(error).toBeInstanceOf(Error);
+      expect(error!.message).toBe('Race Error');
+    });
+  });
+
+  describe('mightFail.allSettled', () => {
+    it('should resolve with all settled results, including fulfilled and rejected promises', async () => {
+      const promises = [Promise.resolve(1), Promise.reject(new Error('AllSettled Error')), Promise.resolve(3)];
+      const [error, result] = await mightFail.allSettled(promises);
+      expect(error).toBeUndefined();
+      expect(result).toEqual([
+        { status: 'fulfilled', value: 1 },
+        { status: 'rejected', reason: new Error('AllSettled Error') },
+        { status: 'fulfilled', value: 3 },
+      ]);
+    });
+  });
+
+  describe('mightFail.any', () => {
+    it('should resolve with the first successful promise', async () => {
+      const promises = [Promise.reject(new Error('Error 1')), Promise.resolve(200), Promise.reject(new Error('Error 2'))];
+      const [error, result] = await mightFail.any(promises);
+      expect(error).toBeUndefined();
+      expect(result).toBe(200);
+    });
+
+    it('should return an AggregateError if all promises fail', async () => {
+      const promises = [Promise.reject(new Error('Error 1')), Promise.reject(new Error('Error 2'))];
+      const [error, result] = await mightFail.any(promises);
+      expect(result).toBeUndefined();
+      expect(error).toBeInstanceOf(AggregateError);
+      expect(error!.message).toBe('All promises were rejected');
+    });
+  });
+})

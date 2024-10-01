@@ -1,4 +1,4 @@
-import { expect, test } from "vitest"
+import {describe, expect, it, test} from "vitest"
 import { mightFail } from "../src/index"
 
 
@@ -53,4 +53,70 @@ test("promise that rejects after delay", async () => {
   const { error, result } = await mightFail(delayedPromise);
   expect(result).toBe(undefined);
   expect(error?.message).toBe("delayed error");
+});
+
+describe("promise concurrent method wrappers", () => {
+  describe("mightFail.all", () => {
+    it("should resolve with an array of values when all promises resolve", async () => {
+      const promises = [Promise.resolve(1), Promise.resolve(2), Promise.resolve(3)];
+      const { result, error } = await mightFail.all(promises);
+      expect(error).toBeUndefined();
+      expect(result).toEqual([1, 2, 3]);
+    });
+
+    it("should fail with the first error when any promise rejects", async () => {
+      const promises = [Promise.resolve(1), Promise.reject(new Error("Error")), Promise.resolve(3)];
+      const { result, error } = await mightFail.all(promises);
+      expect(result).toBeUndefined();
+      expect(error).toBeInstanceOf(Error);
+      expect(error!.message).toBe("Error");
+    });
+  });
+
+  describe("mightFail.race", () => {
+    it("should resolve with the first resolved value", async () => {
+      const promises = [Promise.resolve(1), Promise.reject(new Error("Error")), Promise.resolve(3)];
+      const { result, error } = await mightFail.race(promises);
+      expect(error).toBeUndefined();
+      expect(result).toBe(1);
+    });
+
+    it("should reject with the first rejected error if it occurs before any promise resolves", async () => {
+      const promises = [Promise.reject(new Error("Race Error")), Promise.resolve(1), Promise.resolve(2)];
+      const { result, error } = await mightFail.race(promises);
+      expect(result).toBeUndefined();
+      expect(error).toBeInstanceOf(Error);
+      expect(error!.message).toBe("Race Error");
+    });
+  });
+
+  describe("mightFail.allSettled", () => {
+    it("should resolve with an array of PromiseSettledResult objects", async () => {
+      const promises = [Promise.resolve(1), Promise.reject(new Error("Error")), Promise.resolve(3)];
+      const { result, error } = await mightFail.allSettled(promises);
+      expect(error).toBeUndefined();
+      expect(result).toEqual([
+        { status: "fulfilled", value: 1 },
+        { status: "rejected", reason: new Error("Error") },
+        { status: "fulfilled", value: 3 },
+      ]);
+    });
+  });
+
+  describe("mightFail.any", () => {
+    it("should resolve with the first fulfilled value", async () => {
+      const promises = [Promise.reject(new Error("Error 1")), Promise.resolve(2), Promise.reject(new Error("Error 2"))];
+      const { result, error } = await mightFail.any(promises);
+      expect(error).toBeUndefined();
+      expect(result).toBe(2);
+    });
+
+    it("should reject with an AggregateError if all promises reject", async () => {
+      const promises = [Promise.reject(new Error("Error 1")), Promise.reject(new Error("Error 2"))];
+      const { result, error } = await mightFail.any(promises);
+      expect(result).toBeUndefined();
+      expect(error).toBeInstanceOf(Error);
+      expect(error!.message).toBe("All promises were rejected");
+    });
+  });
 });
