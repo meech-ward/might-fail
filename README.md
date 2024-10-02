@@ -139,10 +139,36 @@ console.log("Parsed object:", result);
 
 `await`ing the `mightFail` functions will return an `Either` type with either an `error` or a `result`.
 
-- `error` always has the type `Error | undefined`.
+- `error` **always** has the type `Error | undefined`.
+  - If an instance of `Error` is not thrown, then a new `Error` will be created from the thrown value.
 - `result` always has the type `T | undefined` where `T` is the type of the result of the promise passed to `mightFail`.
 
 This means that the you never lose the type information of the result of the promise passed to `mightFail`.
+
+The structure of the `Either` type can be "standard", "tuple", or "go" which you can choose based on your preference. Standard is the default for now, typle and go can be used by importing mightfail from the `tuple` or `go` subdirectory.
+
+- `standard` - `{ error: Error | undefined, result: T | undefined }`
+- `tuple` - `[Error | undefined, T | undefined]`
+- `go` - `[T | undefined, Error | undefined]`
+
+--- 
+
+## Static Methods
+
+`mightFail` has static methods that wrap the corresponding static methods of `Promise`.
+
+- [`Promise.race`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/race)
+- [`Promise.all`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/all)
+- [`Promise.allSettled`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/allSettled)
+- [`Promise.any`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/any)
+
+
+- `await mightFail.all([])`
+- `await mightFail.allSettled([])`
+- `await mightFail.race([])`
+- `await mightFail.any([])`
+
+These are identical to the static methods on `Promise` but they return an `Either` type.
 
 ---
 
