@@ -9,4 +9,4 @@
  *
  * @template T The type of the result value.
  */
-export type Either<T> = [undefined, Error] | [T, undefined];
+export type Either<T> = [undefined, Error] | [T, undefined]

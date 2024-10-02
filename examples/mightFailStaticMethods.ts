@@ -1,159 +1,190 @@
-import { mightFail } from "../src";
-import { mightFail as mightFailTuple } from "../src/tuple";
-import { mightFail as mightFailGo } from "../src/go";
+import { mightFail } from "../src"
+import { mightFail as mightFailTuple } from "../src/tuple"
+import { mightFail as mightFailGo } from "../src/go"
 
 async function all() {
   const { error, result } = await mightFail.all([
     Promise.resolve({ message: "success" }),
     Promise.resolve({ message: "success2" }),
-  ]);
+  ])
   if (error) {
-    console.error(error);
-    return;
+    console.error(error)
+    return
   }
-  console.log(result.map((r) => r.message));
+  console.log(result.map((r) => r.message))
 }
 
-all();
+all()
+
+async function allDifferentTypes() {
+  const { error, result } = await mightFail.all([Promise.resolve({ message: "success" }), Promise.resolve(5)])
+  if (error) {
+    console.error(error)
+    return
+  }
+  const [res1, res2] = result
+  console.log(res1, res2)
+}
+
+allDifferentTypes()
+
+async function allDestructured() {
+  const { error, result: [result1, result2] = [] } = await mightFail.all([
+    Promise.resolve({ message: "success" }),
+    Promise.resolve(5),
+  ])
+  if (error) {
+    console.error(error)
+    return
+  }
+  console.log(result1, result2)
+}
+
+allDestructured()
 
 async function allSettled() {
   const { error, result } = await mightFail.allSettled([
     Promise.resolve({ message: "success" }),
     Promise.resolve({ message: "success2" }),
-  ]);
+  ])
   if (error) {
-    console.error(error);
-    return;
+    console.error(error)
+    return
   }
-  console.log(result.map((r) => r.status));
+  console.log(result.map((r) => r.status))
 }
 
-allSettled();
+allSettled()
 
 async function allTuple() {
   const [error, result] = await mightFailTuple.all([
     Promise.resolve({ message: "success" }),
     Promise.resolve({ message: "success2" }),
-  ]);
+  ])
   if (error) {
-    console.error(error);
-    return;
+    console.error(error)
+    return
   }
-  console.log(result.map((r) => r.message));
+  console.log(result.map((r) => r.message))
 }
 
-allTuple();
+allTuple()
+
+async function allTupleDestructured() {
+  const [error, [result1, result2] = []] = await mightFailTuple.all([
+    Promise.resolve({ message: "success" }),
+    Promise.resolve({ message: "success2" }),
+  ])
+  if (error) {
+    console.error(error)
+    return
+  }
+  console.log(result1, result2)
+}
+
+allTupleDestructured()
 
 async function allGo() {
   const [result, error] = await mightFailGo.all([
     Promise.resolve({ message: "success" }),
     Promise.resolve({ message: "success2" }),
-  ]);
+  ])
   if (error) {
-    console.error(error);
-    return;
+    console.error(error)
+    return
   }
-  console.log(result.map((r) => r.message));
+  console.log(result.map((r) => r.message))
 }
 
-allGo();
+allGo()
 
 async function returnStringAfter(message: string, time: number) {
-  await new Promise((resolve) => setTimeout(resolve, time));
-  return { message };
+  await new Promise((resolve) => setTimeout(resolve, time))
+  return { message }
 }
 
 async function race() {
-  const { error, result } = await mightFail.race([
-    returnStringAfter("fast", 100),
-    returnStringAfter("slow", 200),
-  ]);
+  const { error, result } = await mightFail.race([returnStringAfter("fast", 100), returnStringAfter("slow", 200)])
   if (error) {
-    console.error(error);
-    return;
+    console.error(error)
+    return
   }
-  console.log(result.message);
+  console.log(result.message)
 }
 
-race();
+race()
 
 async function any() {
   const { error, result } = await mightFail.any([
     Promise.reject(new Error("Failure 1")),
     returnStringAfter("success", 100),
     Promise.reject(new Error("Failure 2")),
-  ]);
+  ])
   if (error) {
-    console.error(error);
-    return;
+    console.error(error)
+    return
   }
-  console.log(result.message);
+  console.log(result.message)
 }
 
-any();
+any()
 
 async function raceTuple() {
-  const [error, result] = await mightFailTuple.race([
-    returnStringAfter("fast", 100),
-    returnStringAfter("slow", 200),
-  ]);
+  const [error, result] = await mightFailTuple.race([returnStringAfter("fast", 100), returnStringAfter("slow", 200)])
   if (error) {
-    console.error(error);
-    return;
+    console.error(error)
+    return
   }
-  console.log(result.message);
+  console.log(result.message)
 }
 
-raceTuple();
+raceTuple()
 
 async function anyTuple() {
   const [error, result] = await mightFailTuple.any([
     Promise.reject(new Error("Failure 1")),
     returnStringAfter("success", 100),
     Promise.reject(new Error("Failure 2")),
-  ]);
+  ])
   if (error) {
-    console.error(error);
-    return;
+    console.error(error)
+    return
   }
-  console.log(result.message);
+  console.log(result.message)
 }
 
-anyTuple();
+anyTuple()
 
 async function raceGo() {
-  const [result, error] = await mightFailGo.race([
-    returnStringAfter("fast", 100),
-    returnStringAfter("slow", 200),
-  ]);
+  const [result, error] = await mightFailGo.race([returnStringAfter("fast", 100), returnStringAfter("slow", 200)])
   if (error) {
-    console.error(error);
-    return;
+    console.error(error)
+    return
   }
-  console.log(result.message);
+  console.log(result.message)
 }
 
-raceGo();
+raceGo()
 
 async function anyGo() {
   const [result, error] = await mightFailGo.any([
     Promise.reject(new Error("Failure 1")),
     returnStringAfter("success", 100),
     Promise.reject(new Error("Failure 2")),
-  ]);
+  ])
   if (error) {
-    console.error(error);
-    return;
+    console.error(error)
+    return
   }
-  console.log(result.message);
+  console.log(result.message)
 }
 
-anyGo();
+anyGo()
 
 // Call all the new functions
-race();
-any();
-raceTuple();
-anyTuple();
-raceGo();
-anyGo();
+race()
+any()
+raceTuple()
+anyTuple()
+raceGo()
+anyGo()

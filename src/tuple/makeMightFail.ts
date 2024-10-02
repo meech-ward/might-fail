@@ -1,6 +1,5 @@
-import { type Either } from "./Either";
-import { mightFail, mightFailSync } from "./mightFail";
-
+import { type Either } from "./Either"
+import { mightFail, mightFailSync } from "./mightFail"
 
 /**
  * Utility type that unwraps a Promise type. If T is a Promise, it extracts the type the Promise resolves to,
@@ -8,7 +7,7 @@ import { mightFail, mightFailSync } from "./mightFail";
  *
  * @template T The type to be unwrapped if it's a Promise.
  */
-type UnwrapPromise<T> = T extends Promise<infer U> ? U : T;
+type UnwrapPromise<T> = T extends Promise<infer U> ? U : T
 
 /**
  * Wraps a promise-returning function in another function that instead of returning a Promise directly,
@@ -43,14 +42,11 @@ type UnwrapPromise<T> = T extends Promise<infer U> ? U : T;
  */
 export function makeMightFail<T extends (...args: any[]) => Promise<any>>(
   func: T
-): (
-  ...funcArgs: Parameters<T>
-) => Promise<Either<UnwrapPromise<ReturnType<T>>>> {
-
+): (...funcArgs: Parameters<T>) => Promise<Either<UnwrapPromise<ReturnType<T>>>> {
   return async (...args: Parameters<T>) => {
-    const promise = func(...args);
-    return mightFail(promise);
-  };
+    const promise = func(...args)
+    return mightFail(promise)
+  }
 }
 
 /**
@@ -83,7 +79,7 @@ export function makeMightFailSync<T extends (...args: any[]) => any>(
   func: T
 ): (...funcArgs: Parameters<T>) => Either<ReturnType<T>> {
   return (...args: Parameters<T>) => {
-    const throwingFunction = () => func(...args);
-    return mightFailSync(throwingFunction);
-  };
+    const throwingFunction = () => func(...args)
+    return mightFailSync(throwingFunction)
+  }
 }
