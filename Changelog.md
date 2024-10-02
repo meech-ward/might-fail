@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.5.0] - 2024-10-2
+
+### Added
+- `mightFail.any` support
+- `mightFail.race` support
+- `mightFail.all` support
+- `mightFail.allSettled` support
+
+
 ## [0.4.0] - 2024-09-29
 
 ### Added
