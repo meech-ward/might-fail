@@ -19,6 +19,8 @@ export interface PromiseStaticMethods<TEitherMode extends EitherMode> {
     /**
      * Wraps a Promise.all call in a mightFail function.
      * @param values
+     * @template T The type of the resolved values
+     * @returns {Promise<Either<T[]>>}
      */
     all<T>(values: Iterable<T | PromiseLike<T>>): Promise<
         TEitherMode extends 'standard' ? StandardEither<T[]> :
@@ -29,28 +31,34 @@ export interface PromiseStaticMethods<TEitherMode extends EitherMode> {
     /**
      * Wraps a Promise.race call in a mightFail function.
      * @param values
+     * @template T The type of the resolved values
+     * @returns {Promise<Either<T>>}
      */
     race<T>(values: Iterable<T | PromiseLike<T>>): Promise<
-        TEitherMode extends 'standard' ? StandardEither<T[]> :
-            TEitherMode extends 'tuple' ? TupleEither<T[]> :
-                TEitherMode extends 'go' ? GoEither<T[]> :
-                    AnyEither<T[]>
+        TEitherMode extends 'standard' ? StandardEither<T> :
+            TEitherMode extends 'tuple' ? TupleEither<T> :
+                TEitherMode extends 'go' ? GoEither<T> :
+                    AnyEither<T>
     >;
     /**
      * Wraps a Promise.allSettled call in a mightFail function.
      * @param values
+     * @template T The type of the resolved values
+     * @returns {Promise<Either<PromiseSettledResult<T>[]>>}
      */
     allSettled<T>(
         values: Iterable<T | PromiseLike<T>>
-    ): Promise<AnyEither<
+    ): Promise<
         TEitherMode extends 'standard' ? StandardEither<PromiseSettledResult<T>[]> :
             TEitherMode extends 'tuple' ? TupleEither<PromiseSettledResult<T>[]> :
                 TEitherMode extends 'go' ? GoEither<PromiseSettledResult<T>[]> :
                     AnyEither<PromiseSettledResult<T>[]>
-    >>;
+    >;
     /**
      * Wraps a Promise.any call in a mightFail function.
      * @param values
+     * @template T The type of the resolved values
+     * @returns {Promise<Either<T>>}
      */
     any<T>(values: Iterable<T | PromiseLike<T>>): Promise<
         TEitherMode extends 'standard' ? StandardEither<T> :
