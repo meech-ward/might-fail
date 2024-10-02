@@ -42,16 +42,44 @@ export interface PromiseStaticMethods<TEitherMode extends EitherMode> {
    * @template T The type of the resolved values
    * @returns {Promise<Either<T[]>>}
    */
-  all<T>(
-    values: Iterable<T | PromiseLike<T>>
-  ): Promise<
+  all<T>(values: Iterable<T | PromiseLike<T>>): Promise<
+      TEitherMode extends "standard"
+          ?Awaited<StandardEither<T>[]>
+          : TEitherMode extends "tuple"
+              ? Awaited<TupleEither<T>[]>
+              : TEitherMode extends "go"
+                  ? Awaited<GoEither<T>[]>
+                  : Awaited<AnyEither<T>[]>
+      >;
+  /**
+   * Wraps a Promise.all call in a mightFail function.
+   * @param values
+   * @template T The type of the resolved values
+   * @returns {Promise<Either<T[]>>}
+   */
+  all<T extends readonly unknown[] | []>(values: T): Promise<{ -readonly [P in keyof T]:
     TEitherMode extends "standard"
-      ? StandardEither<T[]>
-      : TEitherMode extends "tuple"
-      ? TupleEither<T[]>
-      : TEitherMode extends "go"
-      ? GoEither<T[]>
-      : AnyEither<T[]>
+        ? StandardEither<Awaited<T[P]>>
+        : TEitherMode extends "tuple"
+            ? TupleEither<Awaited<T[P]>>
+            : TEitherMode extends "go"
+                ? GoEither<Awaited<T[P]>>
+                : AnyEither<Awaited<T[P]>>; }>;
+
+  /**
+   * Wraps a Promise.race call in a mightFail function.
+   * @param values
+   * @template T The type of the resolved values
+   * @returns {Promise<Either<T>>}
+   */
+  race<T>(values: Iterable<T | PromiseLike<T>>): Promise<
+      TEitherMode extends "standard"
+          ? Awaited<StandardEither<T>>
+          : TEitherMode extends "tuple"
+              ? Awaited<TupleEither<T>>
+              : TEitherMode extends "go"
+                  ?Awaited<GoEither<T>>
+                  : Awaited<AnyEither<T>>
   >;
   /**
    * Wraps a Promise.race call in a mightFail function.
@@ -59,49 +87,44 @@ export interface PromiseStaticMethods<TEitherMode extends EitherMode> {
    * @template T The type of the resolved values
    * @returns {Promise<Either<T>>}
    */
-  race<T>(
-    values: Iterable<T | PromiseLike<T>>
-  ): Promise<
-    TEitherMode extends "standard"
-      ? StandardEither<T>
+  race<T extends readonly unknown[] | []>(values: T): Promise<
+  TEitherMode extends "standard"
+      ? Awaited<StandardEither<T[number]>>
       : TEitherMode extends "tuple"
-      ? TupleEither<T>
+      ? Awaited<TupleEither<T[number]>>
       : TEitherMode extends "go"
-      ? GoEither<T>
-      : AnyEither<T>
+          ? Awaited<GoEither<T[number]>>
+          : Awaited<AnyEither<T[number]>>
   >;
+
   /**
    * Wraps a Promise.allSettled call in a mightFail function.
    * @param values
    * @template T The type of the resolved values
    * @returns {Promise<Either<PromiseSettledResult<T>[]>>}
    */
-  allSettled<T>(
-    values: Iterable<T | PromiseLike<T>>
-  ): Promise<
-    TEitherMode extends "standard"
-      ? StandardEither<PromiseSettledResult<T>[]>
-      : TEitherMode extends "tuple"
-      ? TupleEither<PromiseSettledResult<T>[]>
-      : TEitherMode extends "go"
-      ? GoEither<PromiseSettledResult<T>[]>
-      : AnyEither<PromiseSettledResult<T>[]>
-  >;
+  allSettled<T extends readonly unknown[] | []>(values: T): Promise<{ -readonly [P in keyof T]: TEitherMode extends "standard" ? StandardEither<PromiseSettledResult<Awaited<T[P]>>> : TEitherMode extends "tuple" ? TupleEither<PromiseSettledResult<Awaited<T[P]>>> : TEitherMode extends "go" ? GoEither<PromiseSettledResult<Awaited<T[P]>>> : AnyEither<PromiseSettledResult<Awaited<T[P]>>> ; }>;
+
+  /**
+   * Wraps a Promise.allSettled call in a mightFail function.
+   * @param values
+   * @template T The type of the resolved values
+   * @returns {Promise<Either<PromiseSettledResult<T>[]>>}
+   */
+  allSettled<T>(values: Iterable<T | PromiseLike<T>>): Promise<PromiseSettledResult<Awaited<T>>[]>;
+
   /**
    * Wraps a Promise.any call in a mightFail function.
    * @param values
    * @template T The type of the resolved values
    * @returns {Promise<Either<T>>}
    */
-  any<T>(
-    values: Iterable<T | PromiseLike<T>>
-  ): Promise<
-    TEitherMode extends "standard"
-      ? StandardEither<T>
-      : TEitherMode extends "tuple"
-      ? TupleEither<T>
-      : TEitherMode extends "go"
-      ? GoEither<T>
-      : AnyEither<T>
-  >;
+  any<T extends readonly unknown[] | []>(values: T): Promise<TEitherMode extends "standard" ? StandardEither<Awaited<T[number]>> : TEitherMode extends "tuple" ? TupleEither<Awaited<T[number]>> : TEitherMode extends "go" ? GoEither<Awaited<T[number]>> : AnyEither<Awaited<T[number]>>>;
+  /**
+   * Wraps a Promise.any call in a mightFail function.
+   * @param values
+   * @template T The type of the resolved values
+   * @returns {Promise<Either<T>>}
+   */
+  any<T>(values: Iterable<T | PromiseLike<T>>): Promise<TEitherMode extends "standard" ? StandardEither<Awaited<T>> : TEitherMode extends "tuple" ? TupleEither<Awaited<T>> : TEitherMode extends "go" ? GoEither<Awaited<T>> : AnyEither<Awaited<T>>>;
 }
