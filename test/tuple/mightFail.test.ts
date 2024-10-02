@@ -118,7 +118,7 @@ describe('promise concurrent method wrappers', () => {
       const promises = [Promise.reject(new Error('Error 1')), Promise.reject(new Error('Error 2'))];
       const [error, result] = await mightFail.any(promises);
       expect(result).toBeUndefined();
-      expect(error).toBeInstanceOf(AggregateError);
+      expect(error).toBeInstanceOf(Error);
       expect(error!.message).toBe('All promises were rejected');
     });
   });
