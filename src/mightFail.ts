@@ -1,18 +1,18 @@
-import { type Either } from "./Either";
-import { handleError, makeProxyHandler } from "./utils";
-import { MightFail, MightFailFunction } from "./utils.type";
+import { type Either } from "./Either"
+import { handleError, makeProxyHandler } from "./utils"
+import { MightFail, MightFailFunction } from "./utils.type"
 
-export const mightFailFunction: MightFailFunction<'standard'> = async function <T>(
-    promise: Promise<T>
+export const mightFailFunction: MightFailFunction<"standard"> = async function <T>(
+  promise: Promise<T>
 ): Promise<Either<T>> {
   try {
-    const result = await promise;
-    return { error: undefined, result } as Either<T>;
+    const result = await promise
+    return { error: undefined, result } as Either<T>
   } catch (err) {
-    const error = handleError(err);
-    return { error, result: undefined };
+    const error = handleError(err)
+    return { error, result: undefined }
   }
-};
+}
 
 /**
  * Wraps a promise in an Either to safely handle both its resolution and rejection. This function
@@ -46,10 +46,10 @@ export const mightFailFunction: MightFailFunction<'standard'> = async function <
  * }
  * console.log('Fetched data:', result);
  */
-export const mightFail: MightFail<'standard'> = new Proxy(
-    mightFailFunction,
-    makeProxyHandler(mightFailFunction)
-) as MightFail<'standard'>;
+export const mightFail: MightFail<"standard"> = new Proxy(
+  mightFailFunction,
+  makeProxyHandler(mightFailFunction)
+) as MightFail<"standard">
 
 /**
  * Wraps a synchronous function in an Either type to safely handle exceptions. This function
@@ -77,10 +77,10 @@ export const mightFail: MightFail<'standard'> = new Proxy(
 
 export function mightFailSync<T>(func: () => T): Either<T> {
   try {
-    const result = func();
-    return { error: undefined, result };
+    const result = func()
+    return { error: undefined, result }
   } catch (err) {
-    const error = handleError(err);
-    return { error, result: undefined };
+    const error = handleError(err)
+    return { error, result: undefined }
   }
 }

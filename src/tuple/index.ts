@@ -1,4 +1,4 @@
-  /**
+/**
    * @module
    *
    * This module contains the interface to use the result of mightFail as an error-first tuple.
@@ -15,9 +15,9 @@
 +  * ```
    */
 
-import { type Either } from "./Either";
-import { mightFail, mightFailSync } from "./mightFail";
-import { makeMightFail, makeMightFailSync } from "./makeMightFail";
+import { type Either } from "./Either"
+import { mightFail, mightFailSync } from "./mightFail"
+import { makeMightFail, makeMightFailSync } from "./makeMightFail"
 
-export { Either, mightFail, makeMightFail, mightFailSync, makeMightFailSync };
-export default { mightFail, makeMightFail, mightFailSync, makeMightFailSync };
+export { Either, mightFail, makeMightFail, mightFailSync, makeMightFailSync }
+export default { mightFail, makeMightFail, mightFailSync, makeMightFailSync }

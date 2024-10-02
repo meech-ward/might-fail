@@ -7,10 +7,10 @@
  */
 export type Either<T> =
   | {
-      error: Error;
-      result: undefined;
+      error: Error
+      result: undefined
     }
   | {
-      result: T;
-      error: undefined;
-    };
+      result: T
+      error: undefined
+    }

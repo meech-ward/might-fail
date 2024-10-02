@@ -1,14 +1,12 @@
-import standard from "../index";
-import { type Either } from "./Either";
-import { makeProxyHandler } from "../utils";
-import { MightFail, MightFailFunction } from "../utils.type";
+import standard from "../index"
+import { type Either } from "./Either"
+import { makeProxyHandler } from "../utils"
+import { MightFail, MightFailFunction } from "../utils.type"
 
-const mightFailFunction: MightFailFunction<'go'> = async function <T>(
-    promise: Promise<T>
-) {
-  const {result, error} = await standard.mightFailFunction(promise);
-  return error ? [undefined, error] : [result, undefined];
-};
+const mightFailFunction: MightFailFunction<"go"> = async function <T>(promise: Promise<T>) {
+  const { result, error } = await standard.mightFailFunction(promise)
+  return error ? [undefined, error] : [result, undefined]
+}
 
 /**
  * Wraps a promise in an Either to safely handle both its resolution and rejection. This function
@@ -42,10 +40,10 @@ const mightFailFunction: MightFailFunction<'go'> = async function <T>(
  * }
  * console.log('Fetched data:', result);
  */
-export const mightFail: MightFail<'go'> = new Proxy(
-    mightFailFunction,
-    makeProxyHandler(mightFailFunction)
-) as MightFail<'go'>;
+export const mightFail: MightFail<"go"> = new Proxy(
+  mightFailFunction,
+  makeProxyHandler(mightFailFunction)
+) as MightFail<"go">
 
 /**
  * Wraps a synchronous function in an Either type to safely handle exceptions. This function
@@ -70,6 +68,6 @@ export const mightFail: MightFail<'go'> = new Proxy(
  * console.log('Parsed object:', result);
  */
 export function mightFailSync<T>(func: () => T): Either<T> {
-  const {result, error} = standard.mightFailSync(func);
-  return error ? [undefined, error] : [result, undefined];
+  const { result, error } = standard.mightFailSync(func)
+  return error ? [undefined, error] : [result, undefined]
 }
