@@ -1,5 +1,18 @@
 import { type Either } from "./Either";
-import { handleError } from "./utils";
+import { handleError, makeProxyHandler } from "./utils";
+import { MightFail, MightFailFunction } from "./utils.type";
+
+export const mightFailFunction: MightFailFunction<'standard'> = async function <T>(
+    promise: Promise<T>
+): Promise<Either<T>> {
+  try {
+    const result = await promise;
+    return { error: undefined, result } as Either<T>;
+  } catch (err) {
+    const error = handleError(err);
+    return { error, result: undefined };
+  }
+};
 
 /**
  * Wraps a promise in an Either to safely handle both its resolution and rejection. This function
@@ -33,15 +46,10 @@ import { handleError } from "./utils";
  * }
  * console.log('Fetched data:', result);
  */
-export async function mightFail<T>(promise: Promise<T>): Promise<Either<T>> {
-  try {
-    const result = await promise;
-    return { error: undefined, result };
-  } catch (err) {
-    const error = handleError(err);
-    return { error, result: undefined };
-  }
-}
+export const mightFail: MightFail<'standard'> = new Proxy(
+    mightFailFunction,
+    makeProxyHandler(mightFailFunction)
+) as MightFail<'standard'>;
 
 /**
  * Wraps a synchronous function in an Either type to safely handle exceptions. This function
@@ -76,100 +84,3 @@ export function mightFailSync<T>(func: () => T): Either<T> {
     return { error, result: undefined };
   }
 }
-
-/**
- * Wraps a Promise.all call in a mightFail function.
- *
- * @export
- * @template T The type of the resolved values
- * @param {Iterable<T | PromiseLike<T>>} values An iterable of promises
- * @return {Either<T[]>} A `Promise` that resolves with an Either object which has a 'result' property as Success<T[]>
- * set to the values resolved by the promise if successful, and 'error' property as undefined.
- * In case of failure, it's a Failure with 'result' as undefined and 'error' of type `Error`. `error` will **always** be an instance of `Error`.
- * The error value will be the first error encountered in the `Promise.all` call.
- *
- * @example
- * // Example of wrapping a Promise.all call in a mightFail function:
- * const {error, result} = await mightFail.all([Promise.resolve(1), Promise.reject(new Error("error"))]);
- *
- * if (error) {
- *   console.error('Promise.all failed:', error.message);
- *   return;
- * }
- * console.log('Promise.all resolved:', result);
- */
-mightFail.all = function<T>(values: Iterable<T | PromiseLike<T>>): Promise<Either<T[]>> {
-  return mightFail(Promise.all(values));
-};
-
-/**
- * Wraps a Promise.race call in a mightFail function.
- *
- * @export
- * @template T The type of the resolved values
- * @param {Iterable<T | PromiseLike<T>>} values An iterable of promises
- * @return {Promise<Either<T>>} A `Promise` that resolves with an Either object which has a property 'result' as Success<T>
- * set to the value resolved by the Promise.race if successful, and 'error' as undefined.
- * In case of failure, it's a Failure with 'result' as undefined and 'error' of type `Error`. `error` will **always** be an instance of `Error`.
- * The error will be the first error encountered in the `Promise.race` call.
- *
- * @example
- * // Example of wrapping a Promise.race call in a mightFail function:
- * const {error, result} = await mightFail.race([Promise.resolve(1), Promise.reject(new Error("error"))]);
- *
- * if (error) {
- *   console.error('Promise.race failed:', error.message);
- *   return;
- * }
- * console.log('Promise.race resolved:', result);
- */
-mightFail.race = function<T>(values: Iterable<T | PromiseLike<T>>): Promise<Either<T>> {
-  return mightFail(Promise.race(values));
-};
-
-/**
- * Wraps a Promise.allSettled call in a mightFail function.
- *
- * @export
- * @template T The type of the resolved values
- * @param {Iterable<T | PromiseLike<T>>} values The values to be resolved
- * @return {Promise<Either<PromiseSettledResult<T>[]>>} A `Promise` that resolves with an `Either` which has a `Success<PromiseSettledResult<T>[]>` with
- * the 'result' property set to the value resolved by the promise if successful, and 'error' as undefined.
- * This method will always resolve with an array of `PromiseSettledResult` objects, even if some of the promises in the iterable are rejected.
- * Hence, the error property will always be undefined.
- *
- * @example
- * // Example of wrapping a Promise.allSettled call in a mightFail function:
- * const {result: settledPromises} = await mightFail.allSettled([Promise.resolve(1), Promise.reject(new Error("error"))]);
- *
- * console.log('Promise.allSettled resolved:', settledPromises);
- */
-mightFail.allSettled = function<T>(values: Iterable<T | PromiseLike<T>>): Promise<Either<PromiseSettledResult<T>[]>> {
-  return mightFail(Promise.allSettled(values));
-};
-
-/**
- * Wraps a Promise.any call in a mightFail function.
- *
- * @export
- * @template T The type of the resolved values
- * @param {Iterable<T | PromiseLike<T>>} values The values to be resolved
- * @return {Promise<Either<T>>} A `Promise` that resolves with an `Either` which has a `Success<T>` with
- * the 'result' property set to the value resolved by the promise if successful, and 'error' as undefined.
- * In case of failure, it's a Failure with 'result' as undefined and 'error' of type `Error`. `error` will **always** be an instance of `Error`.
- *
- * This method will reject only if all the promises in the iterable are rejected.
- *
- * @example
- * // Example of wrapping a Promise.any call in a mightFail function:
- * const {error, result} = await mightFail.any([Promise.resolve(1), Promise.reject(new Error("error"))]);
- *
- * if (error) {
- *   console.error('Promise.any failed:', error.message);
- *   return;
- * }
- * console.log('Promise.any resolved:', result);
- */
-mightFail.any = function<T>(values: Iterable<T | PromiseLike<T>>): Promise<Either<T>> {
-  return mightFail(Promise.any(values));
-};

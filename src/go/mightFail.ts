@@ -1,5 +1,14 @@
 import standard from "../index";
 import { type Either } from "./Either";
+import { makeProxyHandler } from "../utils";
+import { MightFail, MightFailFunction } from "../utils.type";
+
+const mightFailFunction: MightFailFunction<'go'> = async function <T>(
+    promise: Promise<T>
+) {
+  const {result, error} = await standard.mightFailFunction(promise);
+  return error ? [undefined, error] : [result, undefined];
+};
 
 /**
  * Wraps a promise in an Either to safely handle both its resolution and rejection. This function
@@ -33,10 +42,10 @@ import { type Either } from "./Either";
  * }
  * console.log('Fetched data:', result);
  */
-export async function mightFail<T>(promise: Promise<T>): Promise<Either<T>> {
-  const {result, error} = await standard.mightFail(promise);
-  return error ? [undefined, error] : [result, undefined];
-}
+export const mightFail: MightFail<'go'> = new Proxy(
+    mightFailFunction,
+    makeProxyHandler(mightFailFunction)
+) as MightFail<'go'>;
 
 /**
  * Wraps a synchronous function in an Either type to safely handle exceptions. This function
@@ -64,52 +73,3 @@ export function mightFailSync<T>(func: () => T): Either<T> {
   const {result, error} = standard.mightFailSync(func);
   return error ? [undefined, error] : [result, undefined];
 }
-
-/**
- * Wraps a Promise.all call in an Either tuple.
- *
- * @template T The type of the resolved values.
- * @param {Iterable<T | PromiseLike<T>>} values An iterable of promises.
- * @return {Promise<Either<T[]>>} A Promise that resolves with an Either tuple. If successful, it resolves as
- * [T[], undefined]. If any promise fails, it returns [undefined, Error] where the error is the first rejection.
- */
-mightFail.all = function<T>(values: Iterable<T | PromiseLike<T>>): Promise<Either<T[]>> {
-  return mightFail(Promise.all(values));
-};
-
-/**
- * Wraps a Promise.race call in an Either tuple.
- *
- * @template T The type of the resolved values.
- * @param {Iterable<T | PromiseLike<T>>} values An iterable of promises.
- * @return {Promise<Either<T>>} A Promise that resolves with an Either tuple. If successful, it resolves as
- * [T, undefined]. If the first promise fails, it returns [undefined, Error].
- */
-mightFail.race = function<T>(values: Iterable<T | PromiseLike<T>>): Promise<Either<T>> {
-  return mightFail(Promise.race(values));
-};
-
-/**
- * Wraps a Promise.allSettled call in an Either tuple.
- *
- * @template T The type of the resolved values.
- * @param {Iterable<T | PromiseLike<T>>} values An iterable of promises.
- * @return {Promise<Either<PromiseSettledResult<T>[]>>} A Promise that resolves with an Either tuple.
- * Since Promise.allSettled never rejects, the tuple will always be [PromiseSettledResult<T>[], undefined].
- */
-mightFail.allSettled = function<T>(values: Iterable<T | PromiseLike<T>>): Promise<Either<PromiseSettledResult<T>[]>> {
-  return mightFail(Promise.allSettled(values));
-};
-
-/**
- * Wraps a Promise.any call in an Either tuple.
- *
- * @template T The type of the resolved values.
- * @param {Iterable<T | PromiseLike<T>>} values An iterable of promises.
- * @return {Promise<Either<T>>} A Promise that resolves with an Either tuple. If successful, it resolves as
- * [T, undefined]. If all promises fail, it returns [undefined, Error] where the error is an AggregateError.
- */
-mightFail.any = function<T>(values: Iterable<T | PromiseLike<T>>): Promise<Either<T>> {
-  return mightFail(Promise.any(values));
-};
-
