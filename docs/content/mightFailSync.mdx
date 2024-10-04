@@ -1,0 +1,30 @@
+# mightFailSync
+
+
+## Wrap throwing functions in `mightFailSync`
+
+```ts
+const {error, result} = mightFailSync(() => JSON.parse("")); // JSON.parse might throw
+if (error) {
+  console.error('Parsing failed:', error);
+  return
+}
+console.log('Parsed object:', result);
+```
+
+## Or Wrap Sync Function in `makeMightFailSync`
+
+```ts
+function parseJSON(jsonString: string) {
+  return JSON.parse(jsonString); // This might throw
+}
+const safeParseJSON = makeMightFailSync(parseJSON);
+
+const { error, result } = safeParseJSON("");
+
+if (error) {
+  console.error("Parsing failed:", error);
+  return;
+}
+console.log("Parsed object:", result);
+```

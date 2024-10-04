@@ -1,0 +1,136 @@
+
+
+# `mightFail` Async
+
+## Wrap Promise in `mightFail`
+
+<Tabs>
+<Tab name="object">
+```ts
+const { error: networkError, result } = await mightFail(fetch("/posts"));
+
+if (networkError) {
+  // handle network error
+  return;
+}
+
+if (!result.ok) {
+  // handle an error response from server
+  return;
+}
+
+const { error: convertToJSONError, result: posts } = await mightFail(
+  result.json()
+);
+
+if (convertToJSONError) {
+  // handle convertToJSONError
+  return;
+}
+
+posts.map((post) => console.log(post.title));
+```
+</Tab>
+
+<Tab name="tuple">
+```ts
+const [ networkError, result ] = await mightFail(fetch("/posts"));
+
+if (networkError) {
+  // handle network error
+  return;
+}
+
+if (!result.ok) {
+  // handle an error response from server
+  return;
+}
+
+const [convertToJSONError, posts] = await mightFail(
+  result.json()
+);
+
+if (convertToJSONError) {
+  // handle convertToJSONError
+  return;
+}
+
+posts.map((post) => console.log(post.title));
+```
+</Tab>
+<Tab name="go">
+```ts
+const [ result, networkError ] = await mightFail(fetch("/posts"));
+
+if (networkError) {
+  // handle network error
+  return;
+}
+
+if (!result.ok) {
+  // handle an error response from server
+  return;
+}
+
+const [ posts, convertToJSONError ] = await mightFail(
+  result.json()
+);
+
+if (convertToJSONError) {
+  // handle convertToJSONError
+  return;
+}
+
+posts.map((post) => console.log(post.title));
+```
+</Tab>
+</Tabs>
+
+## Or Wrap Async Function in `makeMightFail`
+
+<Tabs>
+<Tab name="object">
+```ts
+const get = makeMightFail(axios.get);
+const { error, result } = await get("/posts");
+
+if (error) {
+  // handle error
+  return;
+}
+
+const posts = result.data
+posts.map((post) => console.log(post.title));
+```
+</Tab>
+<Tab name="tuple">
+```ts
+const get = makeMightFail(axios.get);
+const [ error, result ] = await get("/posts");
+
+if (error) {
+  // handle error
+  return;
+}
+
+const posts = result.data
+posts.map((post) => console.log(post.title));
+```
+</Tab>
+<Tab name="go">
+```ts
+const get = makeMightFail(axios.get);
+const [ result, error ] = await get("/posts");
+
+if (error) {
+  // handle error
+  return;
+}
+
+const posts = result.data
+posts.map((post) => console.log(post.title));
+```
+</Tab>
+</Tabs>
+
+

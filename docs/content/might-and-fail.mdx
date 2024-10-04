@@ -1,0 +1,175 @@
+
+
+# About Might & Fail
+
+Two utility functions that construct an Either and promotes working with the Either type directly.
+
+In cases where the user wants to return an Either created manually, the code would look like this:
+
+```ts
+import { Either } from 'might-fail/tuple'
+
+export async function foo(): Either<boolean> {
+  // ...
+
+  if (condition) {
+    return [new Error("Something went wrong", undefined]
+  }
+
+  if (condition2) {
+    return [new Error("Something else went wrong", undefined]
+  }
+  
+  return [undefined, true]
+}
+```
+
+But with this change, the code can be much simpler to write and read.
+
+```ts
+import { Either, Might, Fail } from 'might-fail/tuple'
+
+export async function foo(): Either<boolean> {
+  // ...
+
+  if (condition) {
+    //   notice that we don't have to wrap the string to an Error construct 
+    // because Fail will automatically wraps it in Error for us.
+    return Fail("Something went wrong") 
+  }
+
+  if (condition2) {
+    return Fail("Something else went wrong") 
+  }
+  
+  return Might(true)
+}
+```
+
+<Note>
+One is not allowed to pass `undefined` to the `Might` function. Because that is against the rule of `Either` type.
+</Note>
+
+Of course, this is just **my** opinion and technically, TypeScript does not care if `T` is `undefined`. But, I made the `Might` function specifically in a way that won't accept `undefined` as its parameter.
+
+```ts
+//  Either should not have both sides as `undefined`
+// export type Either<T> = [Error, undefined] | [undefined, T]
+
+import { Either, Might } from 'might-fail/tuple'
+
+const undefinedAsResult = Might(undefined) // ❌ This is not OK. TypeScript won't allow it.
+
+const explicitlyEmpty = Might(null) // ✅ This is fine because it doesn't go against the rule of the Either concept
+```
+
+## More use cases
+
+<Note>
+The whole point of this library is to have Errors as values and not use try-catch-finally blocks. Hence, Might and Fail are meant to promote the usage of the Either type and forget about try-catch-finally blocks.
+</Note>
+
+Imagine you've decided to create a new async function that you're going to use in your project a lot. And, under the hood,
+this function will call two or three other async functions that might fail. And, you want to gracefully handle all the
+errors using `mightFail` for example, instead of letting the user of your function to wrap it in another `mightFail` and
+catch all the different errors.
+
+Without using Might and Fail, you would have to do throw new Errors every time you want to make the function fail:
+
+```ts
+import { mightFail, Either, Might, Fail } from 'might-fail/tuple'
+
+export async function editPost(id: number): Promise<Post | never> {
+  const [errorVerifyingUser, user] = await mightFail(auth.verifyUser())
+  if (errorVerifyingUser) {
+    throw new Error("Could not verify user. Reason: " + errorVerifyingUser.message)
+  }
+
+  const [errorGettingPost, post] = await mightFail(post.get(id))
+  if (errorGettingPost) {
+    const [errorAuditLogActivity, auditLogActivity] = await mightFail(post.audit(id, user.id, "requested editting a non-existing post"))
+    if (errorAuditLogActivity) {
+      throw new Error("Could not log activity. Reason: " + errorLogActivity.message)
+    }
+
+    throw new Error("Could not get post. Reason: " + errorGettingPost.message)
+  }
+
+  const [errorUpdatingPost, updatedPost] = await mightFail(post.update(id, post.title, post.content))
+  if (errorUpdatingPost) {
+    // ... audit log activity
+
+    throw new Error("Could not update post. Reason: " + errorUpdatingPost.message)
+  }
+  
+  // ... audit log activity
+
+  return updatedPost
+}
+
+// Usage
+
+// The user of this function will have to wrap it in another mightFail or if they fail to do so, they will forget to add
+// the try-catch block and that will lead to a runtime error. Not a good user experience.
+const post = await editPost(1)
+
+// Realizing that we need to wrap it in another mightFail is yet another overhead that the user of this function will 
+// have to consider and it takes away their energy as well as the simplicity of the code.
+const [errorUpdatingPost, updatedPost] = await mightFail(editPost(1))
+
+```
+
+A better way to do this would be to use Might and Fail to create the Either type for the user of this function:
+
+```ts
+import { mightFail, Either, Might, Fail } from 'might-fail/tuple'
+
+export async function editPost(id: number): Promise<Either<Post>> {
+  const [errorVerifyingUser, user] = await mightFail(auth.verifyUser())
+  if (errorVerifyingUser) {
+    return Fail("Could not verify user. Reason: " + errorVerifyingUser.message)
+  }
+  
+  const [errorGettingPost, post] = await mightFail(post.get(id))
+  if (errorGettingPost) {
+    const [errorAuditLogActivity, auditLogActivity] = await mightFail(post.audit(id, user.id, "requested editting a non-existing post"))
+    if (errorAuditLogActivity) {
+      return Fail("Could not log activity. Reason: " + errorLogActivity.message)
+    }
+    
+    return Fail("Could not get post. Reason: " + errorGettingPost.message)
+  }
+  
+  const [errorUpdatingPost, updatedPost] = await mightFail(post.update(id, post.title, post.content))
+  if (errorUpdatingPost) {
+    // ... audit log activity
+    
+    return Fail("Could not update post. Reason: " + errorUpdatingPost.message)
+  }
+  
+  // ... audit log activity
+  
+  return Might(updatedPost)
+}
+
+// Usage
+
+// User has to destructure the Either type and check if it's an error or not. Even though they didn't know
+// that this function returns an Either type, they will get a type error if they decide to work with the result of it without destructuring it.
+
+// Let's say the user doesn't know that this function returns an Either type.
+const updatedPost = await editPost(1)
+
+// ... Later they use it somewhere else
+return updatedPost // Type error: Expected a boolean, received Either<Post>
+
+// Then they go: "Oh right, I forgot to destructure it and handle the error..."
+const [errorUpdatingPost, updated] = await editPost(1)
+if (errorUpdatingPost) {
+  // Handles the error ✅
+  return false
+}
+
+// Now it's safe to use the result
+return updated 
+```
