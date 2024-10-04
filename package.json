@@ -10,11 +10,6 @@
       "require": "./dist/cjs/index.js",
       "types": "./dist/index.d.ts"
     },
-    "./tuple": {
-      "import": "./dist/tuple/index.js",
-      "require": "./dist/cjs/tuple/index.js",
-      "types": "./dist/tuple/index.d.ts"
-    },
     "./go": {
       "import": "./dist/go/index.js",
       "require": "./dist/cjs/go/index.js",

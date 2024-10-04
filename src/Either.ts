@@ -1,3 +1,4 @@
+
 /**
  * Either type represents a data structure that encapsulates a successful result or an Error.
  * It wraps the result of a Promise in an object, making it easier to handle errors by returning
@@ -6,11 +7,37 @@
  * @template T The type of the result value.
  */
 export type Either<T> =
+  | ({
+      error: Error
+      result: undefined
+    } & [Error, undefined])
+  | ({
+      result: T
+      error: undefined
+    } & [undefined, T])
+
+export const createEither = <T>({
+  result,
+  error,
+}:
   | {
       error: Error
       result: undefined
     }
   | {
-      result: T
       error: undefined
-    }
+      result: T
+    }): Either<T> => {
+  if (error) {
+    const array: [Error, undefined] = [error, undefined]
+    const obj = Object.create(array)
+    obj.error = error
+    obj.result = undefined
+    return obj
+  }
+  const array: [undefined, T] = [undefined, result]
+  const obj = Object.create(array)
+  obj.error = undefined
+  obj.result = result
+  return obj
+}
