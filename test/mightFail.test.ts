@@ -1,5 +1,5 @@
 import { describe, expect, it, test } from "vitest"
-import { mightFail } from "../src/index"
+import { mightFail, Might, Fail } from "../src/index"
 
 test("success returns the response", async () => {
   const { error, result } = await mightFail(Promise.resolve("success"))
@@ -116,6 +116,37 @@ describe("promise concurrent method wrappers", () => {
       expect(result).toBeUndefined()
       expect(error).toBeInstanceOf(Error)
       expect(error!.message).toBe("All promises were rejected")
+    })
+  })
+})
+
+describe("Either factories (Might & Fail)", () => {
+  describe("Might", () => {
+    it("should return an Either with the value as the result and undefined as the error", () => {
+      const result = Might(5)
+      expect(result).toEqual({
+        result: 5,
+        error: undefined
+      })
+    })
+  })
+  describe("Fail", () => {
+    it("should return an Either with undefined as the result and the error as the error", () => {
+      const error = new Error("error")
+      const result = Fail(error)
+      expect(result).toEqual({
+        result: undefined,
+        error
+      })
+    })
+
+    it("should return an Either with undefined as the result and the error must be an instance of Error", () => {
+      const error = "error"
+      const result = Fail(error)
+      expect(result).toEqual({
+        result: undefined,
+        error: new Error(error)
+      })
     })
   })
 })
