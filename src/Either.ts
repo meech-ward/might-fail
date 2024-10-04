@@ -1,3 +1,4 @@
+import { createArrayProxy } from "./utils"
 
 /**
  * Either type represents a data structure that encapsulates a successful result or an Error.
@@ -28,16 +29,19 @@ export const createEither = <T>({
       error: undefined
       result: T
     }): Either<T> => {
-  if (error) {
-    const array: [Error, undefined] = [error, undefined]
-    const obj = Object.create(array)
-    obj.error = error
-    obj.result = undefined
-    return obj
-  }
-  const array: [undefined, T] = [undefined, result]
-  const obj = Object.create(array)
-  obj.error = undefined
-  obj.result = result
-  return obj
-}
+      if (error) {
+        const array: [Error, undefined] = [error, undefined]
+        // const obj = Object.create(array)
+        const obj = {} as any
+        obj.error = error
+        obj.result = undefined
+        return createArrayProxy<T>(obj, array)
+      }
+      const array: [undefined, T] = [undefined, result]
+      // const obj = Object.create(array)
+      const obj = {} as any
+      obj.error = undefined
+      obj.result = result
+      return createArrayProxy<T>(obj, array)
+    }
+    

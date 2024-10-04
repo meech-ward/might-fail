@@ -36,3 +36,43 @@ export const makeProxyHandler = <TMightFailFunction extends MightFailFunction<Ei
     }
   },
 })
+
+export const createArrayProxy = <T>(obj: any, array: (undefined | Error | T)[]) => {
+  // Proxy to intercept array methods and properties
+  return new Proxy(obj, {
+    get(target, prop, receiver) {
+      // If the property exists on the object itself, return it
+      if (prop in target) {
+        return Reflect.get(target, prop, receiver)
+      }
+
+      // If the property exists on the internal array, proxy it
+      if (prop in array) {
+        const value = (array as any)[prop] // TypeScript array typing here
+        if (typeof value === "function") {
+          // Proxy array methods
+          return function (...args: any[]) {
+            console.log(`Array method called: ${String(prop)}, Arguments: ${args}`)
+            return value.apply(array, args)
+          }
+        } else {
+          // Return array properties (like length)
+          return value
+        }
+      }
+
+      // Handle the iterator separately
+      if (prop === Symbol.iterator) {
+        const originalIterator = array[Symbol.iterator]()
+        return function* () {
+          for (let item of originalIterator) {
+            console.log(`Iterating item: ${item}`)
+            yield item
+          }
+        }
+      }
+
+      return undefined
+    },
+  })
+}
