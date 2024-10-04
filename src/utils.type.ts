@@ -181,3 +181,5 @@ export interface PromiseStaticMethods<TEitherMode extends EitherMode> {
       : AnyEither<Awaited<T>>
   >
 }
+
+export type NonUndefined<T> = T extends undefined ? never : T

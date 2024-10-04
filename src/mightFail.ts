@@ -1,6 +1,6 @@
 import { type Either } from "./Either"
 import { handleError, makeProxyHandler } from "./utils"
-import { MightFail, MightFailFunction } from "./utils.type"
+import { MightFail, MightFailFunction, NonUndefined } from "./utils.type"
 
 export const mightFailFunction: MightFailFunction<"standard"> = async function <T>(
   promise: Promise<T>
@@ -83,4 +83,27 @@ export function mightFailSync<T>(func: () => T): Either<T> {
     const error = handleError(err)
     return { error, result: undefined }
   }
+}
+
+
+/**
+ * A pure constructor function that takes a non-null value and returns an Either object with the value as the result and undefined as the error.
+ *
+ * @param result
+ * @constructor
+ */
+export function Might<T>(result: NonUndefined<T>): Either<T> {
+  return { result, error: undefined }
+}
+
+/**
+ * A constructor function that takes an error and returns an Either object with undefined as the result and the error as the error.
+ *
+ * The error will **always** be an instance of Error.
+ *
+ * @param error
+ * @constructor
+ */
+export function Fail(error: unknown): Either<undefined> {
+  return { result: undefined, error: handleError(error) }
 }
