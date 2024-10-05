@@ -6,6 +6,10 @@ This works for sync and async code, and you can choose the error handling style 
 
 Scroll to the bottom for the motivation section (why `try,catch,finally` blocks are bad).
 
+## Docs
+
+[https://mightfail.dev](https://mightfail.dev)
+
 ## Install
 
 [![JSR](https://jsr.io/badges/@might/fail)](https://jsr.io/@might/fail)
