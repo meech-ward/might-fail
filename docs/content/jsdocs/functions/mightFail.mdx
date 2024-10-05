@@ -1,0 +1,51 @@
+# Function: mightFail()
+
+```ts
+function mightFail<T>(promise: Promise<T>): Promise<Either<T>>
+```
+
+Wraps a promise in an Either to safely handle both its resolution and rejection. This function
+takes a Promise of type T and returns a Promise which resolves with an object. This object
+either contains a 'result' of type T if the promise resolves successfully, or an 'error' of type Error
+if the promise is rejected.
+
+## Type Parameters
+
+| Type Parameter | Description |
+| ------ | ------ |
+| `T` | The type of the result value. |
+
+## Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `promise` | `Promise`\<`T`\> | The promise to be wrapped in an Either. This is an asynchronous operation that should resolve with a value of type T or reject with an Error. |
+
+## Returns
+
+`Promise`\<[`Either`](https://mightfail.dev/type-aliases/Either.mdx)\<`T`\>\>
+
+A Promise that resolves with an Either. This Either is a `Success<T>` with
+the 'result' property set to the value resolved by the promise if successful, and 'error' as undefined.
+In case of failure, it's a `Failure` with 'result' as undefined and 'error' of type Error. `error` will **always** be an instance of Error.
+
+## Example
+
+```ts
+// Example of wrapping an async function that might fail:
+async function fetchData(url: string): Promise<string> {
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error('Network response was not ok');
+  }
+  return response.text();
+}
+
+const {error, result} = await mightFail(fetchData('https://example.com'));
+
+if (error) {
+  console.error('Fetching failed:', error.message);
+  return;
+}
+console.log('Fetched data:', result);
+```

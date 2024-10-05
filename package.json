@@ -10,11 +10,6 @@
       "require": "./dist/cjs/index.js",
       "types": "./dist/index.d.ts"
     },
-    "./tuple": {
-      "import": "./dist/tuple/index.js",
-      "require": "./dist/cjs/tuple/index.js",
-      "types": "./dist/tuple/index.d.ts"
-    },
     "./go": {
       "import": "./dist/go/index.js",
       "require": "./dist/cjs/go/index.js",
@@ -26,7 +21,8 @@
     "build:esm": "tsc",
     "build:cjs": "tsc --project tsconfig.cjs.json",
     "test": "vitest",
-    "publish": "npm run build && npm publish"
+    "publish": "npm run build && npm publish",
+    "typedoc": "typedoc src"
   },
   "files": [
     "dist"
@@ -52,6 +48,9 @@
     "typescript"
   ],
   "devDependencies": {
+    "jsdoc-to-markdown": "^9.0.2",
+    "typedoc": "^0.26.8",
+    "typedoc-plugin-markdown": "^4.2.9",
     "typescript": "^5.6.2",
     "vitest": "^2.1.1"
   }

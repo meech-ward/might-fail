@@ -6,11 +6,15 @@
  * @template T The type of the result value.
  */
 export type Either<T> =
-  | {
+  | ({
       error: Error
       result: undefined
-    }
-  | {
+    } & [Error, undefined])
+  | ({
       result: T
       error: undefined
-    }
+    } & [undefined, T])
+
+// Note this array interface is undesireable, we would much rather use just an itterator here but TS doesn't yet support that well enough
+// So it has an array interface and proxies array methods. 
+// See the utils `makeEither` for more information.

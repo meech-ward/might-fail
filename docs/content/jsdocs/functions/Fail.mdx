@@ -1,0 +1,19 @@
+# Function: Fail()
+
+```ts
+function Fail(error: unknown): Either<undefined>
+```
+
+A constructor function that takes an error and returns an `Either` object with undefined as the result and the error as the error.
+
+The error will **always** be an instance of Error.
+
+## Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `error` | `unknown` |  |
+
+## Returns
+
+[`Either`](https://mightfail.dev/type-aliases/Either.mdx)\<`undefined`\>

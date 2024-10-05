@@ -127,21 +127,24 @@ describe("promise concurrent method wrappers", () => {
 describe("Either factories (Might & Fail)", () => {
   describe("Might", () => {
     it("should return an Either with the value as the result and undefined as the error", () => {
-      const result = Might(5)
-      expect(result).toEqual([5, undefined])
+      const [result, error] = Might(5)
+      expect(result).toEqual(5)
+      expect(error).toEqual(undefined)
     })
   })
   describe("Fail", () => {
     it("should return an Either with undefined as the result and the error as the error", () => {
       const error = new Error("error")
-      const result = Fail(error)
-      expect(result).toEqual([undefined, error])
+      const [failResult, failError] = Fail(error)
+      expect(failResult).toEqual(undefined)
+      expect(failError).toEqual(error)
     })
 
     it("should return an Either with undefined as the result and the error must be an instance of Error", () => {
       const error = "error"
-      const result = Fail(error)
-      expect(result).toEqual([undefined, new Error(error)])
+      const [failResult, failError] = Fail(error)
+      expect(failResult).toEqual(undefined)
+      expect(failError).toEqual(new Error(error))
     })
   })
 })

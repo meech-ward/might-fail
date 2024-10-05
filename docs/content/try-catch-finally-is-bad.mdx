@@ -11,7 +11,7 @@ This mostly happens at the most "user facing" part of the code like an api endpo
 Guarding allows you to handle your errors early and return from the function early, making them more readable and easier to reason about.
 
 ```ts
-const { error: networkError, result } = await mightFail(fetch("/posts"));
+const [ networkError, result ] = await mightFail(fetch("/posts"));
 // guard against a network error
 if (networkError) {
   return;
@@ -20,7 +20,7 @@ if (networkError) {
 if (!result.ok) {
   return;
 }
-const { error: convertToJSONError, result: posts } = await mightFail(
+const [ convertToJSONError, posts ] = await mightFail(
   result.json()
 );
 // guard against an error converting the response to JSON
@@ -105,4 +105,3 @@ console.log(something())
 ```
 
 Can every single dev in your team understand what the above code will print out?
-

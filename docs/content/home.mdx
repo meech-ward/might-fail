@@ -5,8 +5,6 @@ A TypeScript library for handling async and sync errors without `try` and `catch
 
 This works for **sync** and **async** code, and you can choose the error handling style that you like.
 
-Check out the <Link href="/motivation">motivation</Link> section for why `try,catch,finally` blocks are bad.
-
 ## Install
 
 <SideBySide>
@@ -88,7 +86,34 @@ import { mightFail } from "@might/fail"
 
 
 <Tabs>
-<Tab name="standard">
+<Tab name="tuple">
+```ts
+import { mightFail } from "might-fail"
+const [networkError, result] = await mightFail(fetch("/posts"))
+
+if (networkError) {
+  // handle network error
+  return
+}
+
+if (!result.ok) {
+  // handle an error response from server
+  return
+}
+
+const [convertToJSONError, posts] = await mightFail(
+  result.json()
+)
+
+if (convertToJSONError) {
+  // handle convertToJSONError
+  return
+}
+
+posts.map((post) => console.log(post.title))
+```
+</Tab>
+<Tab name="object">
 ```ts
 import { mightFail } from "might-fail"
 const { error: networkError, result } = await mightFail(fetch("/posts"))
@@ -104,33 +129,6 @@ if (!result.ok) {
 }
 
 const { error: convertToJSONError, result: posts } = await mightFail(
-  result.json()
-)
-
-if (convertToJSONError) {
-  // handle convertToJSONError
-  return
-}
-
-posts.map((post) => console.log(post.title))
-```
-</Tab>
-<Tab name="tuple">
-```ts
-import { mightFail } from "might-fail/tuple"
-const [networkError, result] = await mightFail(fetch("/posts"))
-
-if (networkError) {
-  // handle network error
-  return
-}
-
-if (!result.ok) {
-  // handle an error response from server
-  return
-}
-
-const [convertToJSONError, posts] = await mightFail(
   result.json()
 )
 

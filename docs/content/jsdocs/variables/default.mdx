@@ -1,0 +1,25 @@
+# Variable: default
+
+```ts
+default: {
+  Fail: (error: unknown) => Either<undefined>;
+  makeMightFail: <T>(func: T) => (...funcArgs: Parameters<T>) => Promise<Either<UnwrapPromise<ReturnType<T>>>>;
+  makeMightFailSync: <T>(func: T) => (...funcArgs: Parameters<T>) => Either<ReturnType<T>>;
+  Might: <T>(result: NonUndefined<T>) => Either<T>;
+  mightFail: MightFail<"standard">;
+  mightFailFunction: MightFailFunction<"standard">;
+  mightFailSync: <T>(func: () => T) => Either<T>;
+};
+```
+
+## Type declaration
+
+| Name | Type |
+| ------ | ------ |
+| `Fail` | (`error`: `unknown`) => [`Either`](https://mightfail.dev/type-aliases/Either.mdx)\<`undefined`\> |
+| `makeMightFail` | \<`T`\>(`func`: `T`) => (...`funcArgs`: `Parameters`\<`T`\>) => `Promise`\<[`Either`](https://mightfail.dev/type-aliases/Either.mdx)\<`UnwrapPromise`\<`ReturnType`\<`T`\>\>\>\> |
+| `makeMightFailSync` | \<`T`\>(`func`: `T`) => (...`funcArgs`: `Parameters`\<`T`\>) => [`Either`](https://mightfail.dev/type-aliases/Either.mdx)\<`ReturnType`\<`T`\>\> |
+| `Might` | \<`T`\>(`result`: `NonUndefined`\<`T`\>) => [`Either`](https://mightfail.dev/type-aliases/Either.mdx)\<`T`\> |
+| `mightFail` | `MightFail`\<`"standard"`\> |
+| `mightFailFunction` | `MightFailFunction`\<`"standard"`\> |
+| `mightFailSync` | \<`T`\>(`func`: () => `T`) => [`Either`](https://mightfail.dev/type-aliases/Either.mdx)\<`T`\> |

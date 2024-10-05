@@ -1,11 +1,14 @@
 import standard from "../index"
 import { type Either } from "./Either"
-import { makeProxyHandler } from "../utils"
-import { MightFail, MightFailFunction, NonUndefined } from "../utils.type"
+import { createEither } from "../utils/createEither"
+import { makeProxyHandler } from "../utils/staticMethodsProxy"
+import { MightFail, MightFailFunction, NonUndefined } from "../utils/utils.type"
 
 const mightFailFunction: MightFailFunction<"go"> = async function <T>(promise: Promise<T>) {
   const { result, error } = await standard.mightFailFunction(promise)
-  return error ? [undefined, error] : [result, undefined]
+  return error
+    ? createEither<T, "go">({ result: undefined, error }, "go")
+    : createEither<T, "go">({ result, error: undefined }, "go")
 }
 
 /**
@@ -14,7 +17,7 @@ const mightFailFunction: MightFailFunction<"go"> = async function <T>(promise: P
  * either contains the resolved value of type T as the first element and undefined as the second if the promise
  * resolves successfully, or undefined as the first element and an Error as the second if the promise is rejected.
  *
- * @export
+
  * @template T The type of the result value.
  * @param {Promise<T>} promise - The promise to be wrapped in an Either. This is an asynchronous operation that
  * should resolve with a value of type T or reject with an Error.
@@ -42,7 +45,7 @@ const mightFailFunction: MightFailFunction<"go"> = async function <T>(promise: P
  */
 export const mightFail: MightFail<"go"> = new Proxy(
   mightFailFunction,
-  makeProxyHandler(mightFailFunction)
+  makeProxyHandler(mightFailFunction),
 ) as MightFail<"go">
 
 /**
@@ -51,7 +54,7 @@ export const mightFail: MightFail<"go"> = new Proxy(
  * It returns an Either tuple that either contains the value of type T as the first element and undefined as the second
  * if the function succeeds, or undefined as the first element and an Error as the second if the function throws an error.
  *
- * @export
+
  * @template T The type of the result value.
  * @param {() => T} func - A wrapper function that is expected to invoke the throwing function.
  *  That function should return a value of type T or throw an error.
@@ -69,9 +72,10 @@ export const mightFail: MightFail<"go"> = new Proxy(
  */
 export function mightFailSync<T>(func: () => T): Either<T> {
   const { result, error } = standard.mightFailSync(func)
-  return error ? [undefined, error] : [result, undefined]
+  return error
+    ? createEither<T, "go">({ result: undefined, error }, "go")
+    : createEither<T, "go">({ result, error: undefined }, "go")
 }
-
 
 /**
  * A pure constructor function that takes a non-null value and returns an Either object with the value as the result and undefined as the error.
@@ -81,7 +85,7 @@ export function mightFailSync<T>(func: () => T): Either<T> {
  */
 export function Might<T>(result: NonUndefined<T>): Either<T> {
   const standardMight = standard.Might<T>(result)
-  return [standardMight.result as T, undefined]
+  return createEither<T, "go">({ result: standardMight.result as T, error: undefined }, "go")
 }
 
 /**
@@ -94,5 +98,5 @@ export function Might<T>(result: NonUndefined<T>): Either<T> {
  */
 export function Fail(error: unknown): Either<undefined> {
   const standardFail = standard.Fail(error)
-  return [undefined, standardFail.error]
+  return createEither<undefined, "go">({ result: undefined, error: standardFail.error }, "go")
 }

@@ -3,8 +3,7 @@
   "version": "0.5.1",
   "exports": {
     ".": "./src/index.ts",
-    "./go": "./src/go/index.ts",
-    "./tuple": "./src/tuple/index.ts"
+    "./go": "./src/go/index.ts"
   },
   "license": "MIT"
 }
