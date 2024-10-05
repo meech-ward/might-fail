@@ -2,5 +2,7 @@
   "tabWidth": 2,
   "useTabs": false,
   "semi": false,
-  "printWidth": 120
+  "printWidth": 120,
+  "endOfLine": "crlf",
+  "trailingComma": "none"
 }
