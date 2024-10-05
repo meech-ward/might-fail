@@ -1,6 +1,6 @@
 {
   "name": "might-fail",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "Return an Either object instead of throwing an exception",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
