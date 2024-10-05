@@ -1,16 +1,13 @@
-import { type Either, createEither } from "./Either"
-import { handleError, makeProxyHandler } from "./utils"
+import { type Either } from "./Either"
+import { createEither, handleError, makeProxyHandler } from "./utils"
 import { MightFail, MightFailFunction, NonUndefined } from "./utils.type"
 
-
-
-
 export const mightFailFunction: MightFailFunction<"standard"> = async function <T>(
-  promise: Promise<T>
+  promise: Promise<T>,
 ): Promise<Either<T>> {
   try {
     const result = await promise
-    return createEither<T>({result, error: undefined})
+    return createEither<T>({ result, error: undefined })
   } catch (err) {
     const error = handleError(err)
     return createEither<T>({ error, result: undefined })
@@ -51,7 +48,7 @@ export const mightFailFunction: MightFailFunction<"standard"> = async function <
  */
 export const mightFail: MightFail<"standard"> = new Proxy(
   mightFailFunction,
-  makeProxyHandler(mightFailFunction)
+  makeProxyHandler(mightFailFunction),
 ) as MightFail<"standard">
 
 /**

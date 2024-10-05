@@ -1,11 +1,13 @@
 import standard from "../index"
-import { type Either, createEither } from "./Either"
-import { makeProxyHandler } from "../utils"
+import { type Either } from "./Either"
+import { createEither, makeProxyHandler } from "../utils"
 import { MightFail, MightFailFunction, NonUndefined } from "../utils.type"
 
 const mightFailFunction: MightFailFunction<"go"> = async function <T>(promise: Promise<T>) {
   const { result, error } = await standard.mightFailFunction(promise)
-  return error ? createEither<T>({ result: undefined, error }) : createEither<T>({ result, error: undefined })
+  return error
+    ? createEither<T, "go">({ result: undefined, error }, "go")
+    : createEither<T, "go">({ result, error: undefined }, "go")
 }
 
 /**
@@ -42,7 +44,7 @@ const mightFailFunction: MightFailFunction<"go"> = async function <T>(promise: P
  */
 export const mightFail: MightFail<"go"> = new Proxy(
   mightFailFunction,
-  makeProxyHandler(mightFailFunction)
+  makeProxyHandler(mightFailFunction),
 ) as MightFail<"go">
 
 /**
@@ -69,9 +71,10 @@ export const mightFail: MightFail<"go"> = new Proxy(
  */
 export function mightFailSync<T>(func: () => T): Either<T> {
   const { result, error } = standard.mightFailSync(func)
-  return error ? createEither<T>({ result: undefined, error }) : createEither<T>({ result, error: undefined })
+  return error
+    ? createEither<T, "go">({ result: undefined, error }, "go")
+    : createEither<T, "go">({ result, error: undefined }, "go")
 }
-
 
 /**
  * A pure constructor function that takes a non-null value and returns an Either object with the value as the result and undefined as the error.
@@ -81,7 +84,7 @@ export function mightFailSync<T>(func: () => T): Either<T> {
  */
 export function Might<T>(result: NonUndefined<T>): Either<T> {
   const standardMight = standard.Might<T>(result)
-  return createEither<T>({ result: standardMight.result as T, error: undefined })
+  return createEither<T, "go">({ result: standardMight.result as T, error: undefined }, "go")
 }
 
 /**
@@ -94,5 +97,5 @@ export function Might<T>(result: NonUndefined<T>): Either<T> {
  */
 export function Fail(error: unknown): Either<undefined> {
   const standardFail = standard.Fail(error)
-  return createEither<undefined>({ result: undefined, error: standardFail.error })
+  return createEither<undefined, "go">({ result: undefined, error: standardFail.error }, "go")
 }

@@ -1,4 +1,6 @@
 import { EitherMode, MightFailFunction } from "./utils.type"
+import { Either as StandardEither } from "./Either"
+import { Either as GoEither } from "./go/Either"
 
 export function handleError(error: unknown): Error {
   if (error instanceof Error) {
@@ -17,7 +19,7 @@ export function handleError(error: unknown): Error {
 }
 
 export const makeProxyHandler = <TMightFailFunction extends MightFailFunction<EitherMode>>(
-  mightFailFunction: TMightFailFunction
+  mightFailFunction: TMightFailFunction,
 ) => ({
   get(_: TMightFailFunction, property: string) {
     if (Object.getOwnPropertyDescriptor(Promise, property) === undefined) {
@@ -37,7 +39,36 @@ export const makeProxyHandler = <TMightFailFunction extends MightFailFunction<Ei
   },
 })
 
-export const createArrayProxy = <T>(obj: any, array: (undefined | Error | T)[]) => {
+export const createEither = <T, TEitherMode extends EitherMode = "standard">(
+  {
+    result,
+    error,
+  }:
+    | {
+        error: Error
+        result: undefined
+      }
+    | {
+        error: undefined
+        result: T
+      },
+  eitherMode: EitherMode = "standard",
+): TEitherMode extends "standard" ? StandardEither<T> : GoEither<T> => {
+  if (error) {
+    const array = eitherMode === "standard" ? [error, undefined] : [undefined, error]
+    const obj = {} as any
+    obj.error = error
+    obj.result = undefined
+    return createArrayProxy<T>(obj, array)
+  }
+  const array = eitherMode === "standard" ? [undefined, result] : [result, undefined]
+  const obj = {} as any
+  obj.error = undefined
+  obj.result = result
+  return createArrayProxy<T>(obj, array)
+}
+
+const createArrayProxy = <T>(obj: any, array: (undefined | Error | T)[]) => {
   // Proxy to intercept array methods and properties
   return new Proxy(obj, {
     get(target, prop, receiver) {
@@ -52,7 +83,6 @@ export const createArrayProxy = <T>(obj: any, array: (undefined | Error | T)[]) 
         if (typeof value === "function") {
           // Proxy array methods
           return function (...args: any[]) {
-            console.log(`Array method called: ${String(prop)}, Arguments: ${args}`)
             return value.apply(array, args)
           }
         } else {
@@ -66,7 +96,6 @@ export const createArrayProxy = <T>(obj: any, array: (undefined | Error | T)[]) 
         const originalIterator = array[Symbol.iterator]()
         return function* () {
           for (let item of originalIterator) {
-            console.log(`Iterating item: ${item}`)
             yield item
           }
         }
