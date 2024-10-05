@@ -1,5 +1,5 @@
-import type { Either as StandardEither } from "./Either"
-import type { Either as GoEither } from "./go"
+import type { Either as StandardEither } from "../Either"
+import type { Either as GoEither } from "../go/Either"
 
 export type EitherMode = "standard" | "go" | "any"
 
@@ -33,7 +33,7 @@ export type MightFail<
 export interface PromiseStaticMethods<TEitherMode extends EitherMode> {
   /**
    * Wraps a Promise.all call in a mightFail function.
-   * @params values
+   * @param values - An iterable of promises
    * @template T The type of the resolved values
    * @return {Promise} - Promise<Awaited<Either<T[]>>>
    */
@@ -49,7 +49,7 @@ export interface PromiseStaticMethods<TEitherMode extends EitherMode> {
 
   /**
    * Wraps a Promise.all call in a mightFail function.
-   * @params values
+   * @param values - An array of promises
    * @template T The type of the resolved values
    * @return {Promise} - Promise<Either<{ -readonly [P in keyof T]: Awaited<T[P]>; }>>
    */
@@ -66,7 +66,7 @@ export interface PromiseStaticMethods<TEitherMode extends EitherMode> {
   /**
    * Wraps a Promise.race call in a mightFail function.
    *
-   * @params values - An iterable of promises
+   * @param values - An array of promises
    * @template T The type of the resolved values
    * @return {Promise} - Promise<Awaited<Either<T>>>
    */
@@ -82,7 +82,7 @@ export interface PromiseStaticMethods<TEitherMode extends EitherMode> {
 
   /**
    * Wraps a Promise.race call in a mightFail function.
-   * @params values
+   * @param values - An array of promises
    * @template T The type of the resolved values
    * @return {Promise} - Promise<Awaited<Either<T[number]>>>
    */
@@ -98,7 +98,7 @@ export interface PromiseStaticMethods<TEitherMode extends EitherMode> {
 
   /**
    * Wraps a Promise.allSettled call in a mightFail function.
-   * @params values
+   * @param values - An array of promises
    * @template T The type of the resolved values
    * @return {Promise} - Promise<Either<{ -readonly [P in keyof T]: PromiseSettledResult<Awaited<T[P]>>}>>
    */
@@ -114,7 +114,7 @@ export interface PromiseStaticMethods<TEitherMode extends EitherMode> {
 
   /**
    * Wraps a Promise.allSettled call in a mightFail function.
-   * @params values
+   * @param values - An iterable of promises
    * @template T The type of the resolved values
    * @return {Promise} - Promise<Either<PromiseSettledResult<Awaited<T>>[]>>
    */
@@ -131,7 +131,7 @@ export interface PromiseStaticMethods<TEitherMode extends EitherMode> {
   /**
    * Wraps a Promise.any call in a mightFail function.
    *
-   * @params values
+   * @param values - An array of promises
    * @template T The type of the resolved values
    * @return {Promise} - Promise<Either<Awaited<T[number]>>>
    */
@@ -148,7 +148,7 @@ export interface PromiseStaticMethods<TEitherMode extends EitherMode> {
   /**
    * Wraps a Promise.any call in a mightFail function.
    *
-   * @params values
+   * @param values - An iterable of promises  
    * @template T The type of the resolved values
    * @return {Promise} - Promise<Either<Awaited<T>>>
    */

@@ -10,16 +10,3 @@ async function main() {
 }
 
 main()
-async function main2() {
-  const result = await mightFail(Promise.resolve({ message: "success" }))
-  console.log(result)
-}
-
-main2()
-
-async function main3() {
-  const result = await mightFail(Promise.reject(new Error("error")))
-  console.log(result)
-}
-
-main3()

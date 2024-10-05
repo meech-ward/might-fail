@@ -1,0 +1,46 @@
+# Getting Started
+
+* [❌ try, catch, finally](/try-catch-finally-is-bad)
+* [`mightFail`](/might-fail)
+* [`mightFailSync`](/might-fail-sync)
+* [Static Methods](/static-methods)
+* [Either Type](/either)
+* [Might & Fail](/might-and-fail)
+
+## Change the way you catch errors
+
+That's it, that's all this library helps you do. No major re-writes for your code base, no major changes at all. Just start handling your errors in a **much** better way.
+
+You still throw errors or let other libraries throw errors. Just stop using `try, catch, finally` and use `mightFail` or `mightFailSync` instead.
+
+## `catch` Sucks. Guarding is Good.
+
+Guarding allows you to handle your errors early and return from the function early, making them more readable and easier to reason about.
+
+```ts
+const [ networkError, result ] = await mightFail(fetch("/posts"));
+// guard against a network error
+if (networkError) {
+  return;
+}
+// guard against an error response from the server
+if (!result.ok) {
+  return;
+}
+const [ convertToJSONError, posts ] = await mightFail(
+  result.json()
+);
+// guard against an error converting the response to JSON
+if (convertToJSONError) {
+  return;
+}
+
+// success case, unnested and at the bottom of the function
+posts.map((post) => console.log(post.title));
+```
+
+The success case is now the only code that is **not** nested in another block. It's also at the very bottom of the function making it easy to find. 
+
+<Important>
+  The sucess case is always at the bottom of the function. All of your error handling logic is next to where the error might occur.
+</Important>

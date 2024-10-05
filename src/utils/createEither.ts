@@ -1,53 +1,12 @@
-import { EitherMode, MightFailFunction } from "./utils.type"
-import { Either as StandardEither } from "./Either"
-import { Either as GoEither } from "./go/Either"
+import { EitherMode } from "./utils.type"
+import type { Either as StandardEither } from "../Either"
+import type { Either as GoEither } from "../go/Either"
 
-export function handleError(error: unknown): Error {
-  if (error instanceof Error) {
-    return error
-  }
-  if (typeof error === "string") {
-    return createErrorWithoutMightFailStackTraces(error)
-  }
-  if (typeof error === "object" && error !== null) {
-    if ("message" in error && typeof error.message === "string") {
-      return createErrorWithoutMightFailStackTraces(error.message)
-    }
-    return createErrorWithoutMightFailStackTraces(error as any)
-  }
-  return createErrorWithoutMightFailStackTraces("Unknown error")
-}
 
-function createErrorWithoutMightFailStackTraces(message: any): Error {
-  const error = new Error(message)
-
-  const stack = error.stack?.split("\n")
-  stack?.splice(1, 3)
-  error.stack = stack?.join("\n")
-
-  return error
-}
-
-export const makeProxyHandler = <TMightFailFunction extends MightFailFunction<EitherMode>>(
-  mightFailFunction: TMightFailFunction,
-) => ({
-  get(_: TMightFailFunction, property: string) {
-    if (Object.getOwnPropertyDescriptor(Promise, property) === undefined) {
-      return mightFailFunction(Promise.reject(new Error(`property ${property} not found on Promise`)))
-    }
-
-    const value = (Promise as any)[property]
-
-    if (typeof value !== "function") {
-      return mightFailFunction(Promise.reject(new Error(`property ${property} is not a Promise method`)))
-    }
-
-    return function (...args: any[]) {
-      const promise = value.apply(Promise, args)
-      return mightFailFunction(promise)
-    }
-  },
-})
+// This is not how we intended the tuple feature to work but this is the only way we could currently get TypeScript to play nice
+// this really should just be an interator on the either object, but it's much more complicated because of TS.
+// All the details are in this PR https://github.com/meech-ward/might-fail/pull/7#issuecomment-2395122593 
+// hopefully we can change this with a future version of TS.
 
 export const createEither = <T, TEitherMode extends EitherMode = "standard">(
   {

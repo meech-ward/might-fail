@@ -1,0 +1,43 @@
+# Function: mightFailSync()
+
+```ts
+function mightFailSync<T>(func: () => T): Either<T>
+```
+
+Wraps a synchronous function in an Either type to safely handle exceptions. This function
+executes a provided function that returns a value of type T, capturing any thrown errors.
+It returns an object that either contains a 'result' of type T if the function succeeds,
+or an 'error' of type Error if the function throws an error.
+
+## Type Parameters
+
+| Type Parameter | Description |
+| ------ | ------ |
+| `T` | The type of the result value.◊ |
+
+## Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `func` | () => `T` | A wrapper function that is expected to invoke the throwing function. That function should return a value of type T or throw an error. |
+
+## Returns
+
+[`Either`](https://mightfail.dev/type-aliases/Either.mdx)\<`T`\>
+
+An object that is either a `Success<T>` with the result property set to the value returned by `func`,
+                    or a `Failure` with the error property set to the caught error. `Success<T>` has a 'result' of type T
+                    and 'error' as null. `Failure` has 'result' as null and 'error' of type Error.
+
+## Example
+
+```ts
+// Example of wrapping a synchronous function that might throw an error:
+const {error, result} = mightFailSync(() => JSON.parse(""));
+
+if (error) {
+  console.error('Parsing failed:', error);
+  return;
+}
+console.log('Parsed object:', result);
+```

@@ -3,6 +3,19 @@
 
 ## Wrap throwing functions in `mightFailSync`
 
+<Tabs>
+<Tab name="tuple">
+```ts
+const [error, result] = mightFailSync(() => JSON.parse("")); // JSON.parse might throw
+if (error) {
+  console.error('Parsing failed:', error);
+  return
+}
+console.log('Parsed object:', result);
+```
+</Tab>
+
+<Tab name="object">
 ```ts
 const {error, result} = mightFailSync(() => JSON.parse("")); // JSON.parse might throw
 if (error) {
@@ -11,9 +24,39 @@ if (error) {
 }
 console.log('Parsed object:', result);
 ```
+</Tab>
+<Tab name="go">
+```ts
+const [result, error] = mightFailSync(() => JSON.parse("")); // JSON.parse might throw
+if (error) {
+  console.error('Parsing failed:', error);
+  return
+}
+console.log('Parsed object:', result);
+```
+</Tab>
+</Tabs>
 
 ## Or Wrap Sync Function in `makeMightFailSync`
 
+<Tabs>
+<Tab name="tuple">
+```ts
+function parseJSON(jsonString: string) {
+  return JSON.parse(jsonString); // This might throw
+}
+const safeParseJSON = makeMightFailSync(parseJSON);
+
+const [error, result] = safeParseJSON("");
+
+if (error) {
+  console.error("Parsing failed:", error);
+  return;
+}
+console.log("Parsed object:", result);
+```
+</Tab>
+<Tab name="object">
 ```ts
 function parseJSON(jsonString: string) {
   return JSON.parse(jsonString); // This might throw
@@ -28,3 +71,21 @@ if (error) {
 }
 console.log("Parsed object:", result);
 ```
+</Tab>
+<Tab name="go">
+```ts
+function parseJSON(jsonString: string) {
+  return JSON.parse(jsonString); // This might throw
+}
+const safeParseJSON = makeMightFailSync(parseJSON);
+
+const [result, error] = safeParseJSON("");
+
+if (error) {
+  console.error("Parsing failed:", error);
+  return;
+}
+console.log("Parsed object:", result);
+```
+</Tab>
+</Tabs>

@@ -1,0 +1,23 @@
+# Function: Might()
+
+```ts
+function Might<T>(result: NonUndefined<T>): Either<T>
+```
+
+A pure constructor function that takes a non-null value and returns an `Either` object with the value as the result and undefined as the error.
+
+## Type Parameters
+
+| Type Parameter |
+| ------ |
+| `T` |
+
+## Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `result` | `NonUndefined`\<`T`\> |  |
+
+## Returns
+
+[`Either`](https://mightfail.dev/type-aliases/Either.mdx)\<`T`\>
