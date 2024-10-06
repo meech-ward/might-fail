@@ -15,7 +15,7 @@
   "enumMembersFormat": "table",
   "typeDeclarationFormat": "table",
   "propertyMembersFormat": "table",
-  "publicPath": "https://mightfail.dev",
+  "publicPath": "/",
   "sanitizeComments": true,
   "anchorPrefix": "markdown-header",
   "fileExtension": ".mdx",
