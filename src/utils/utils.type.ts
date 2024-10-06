@@ -163,4 +163,4 @@ export interface PromiseStaticMethods<TEitherMode extends EitherMode> {
   >
 }
 
-export type NonUndefined<T> = T extends undefined ? never : T
+export type NotUndefined<T> = T extends undefined ? never : T

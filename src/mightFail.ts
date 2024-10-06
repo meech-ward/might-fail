@@ -2,7 +2,7 @@ import { type Either } from "./Either"
 import { makeProxyHandler } from "./utils/staticMethodsProxy"
 import { handleError } from "./utils/errors"
 import { createEither } from "./utils/createEither"
-import { MightFail, MightFailFunction, NonUndefined } from "./utils/utils.type"
+import { MightFail, MightFailFunction, NotUndefined } from "./utils/utils.type"
 
 export const mightFailFunction: MightFailFunction<"standard"> = async function <T>(
   promise: Promise<T>
@@ -89,7 +89,7 @@ export const mightFailSync = function mightFailSync<T>(func: () => T): Either<T>
  *
  * @param result
  */
-export const Might = function Might<T>(result: NonUndefined<T>): Either<T> {
+export const Might = function Might<T>(result: NotUndefined<T>): Either<T> {
   return createEither<T>({ result, error: undefined })
 }
 
