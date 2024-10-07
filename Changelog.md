@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.6.1] - 2024-10-6
+
+### Added
+- `Might` and `Fail` functions
+- new docs page in the readme
+
+### Changed
+- `mightFail` and `mightFailSync` now return an object tuple so you can destructure it as an object or a tuple, your choice.
+- removed the `/tuple` folder since the normal `might-fail` import will work the same.
+
+
+
 ## [0.5.0] - 2024-10-2
 
 ### Added
