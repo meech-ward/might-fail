@@ -1,0 +1,35 @@
+# Static Methods
+
+`mightFail` has static methods that wrap the corresponding static methods of `Promise`.
+
+- [`Promise.race`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/race)
+- [`Promise.all`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/all)
+- [`Promise.allSettled`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/allSettled)
+- [`Promise.any`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/any)
+
+
+- `await mightFail.all([])`
+- `await mightFail.allSettled([])`
+- `await mightFail.race([])`
+- `await mightFail.any([])`
+
+These are identical to the static methods on `Promise` but they return an [`Either`](/either) type.
+
+## Example
+
+```ts
+import { mightFail } from 'might-fail'
+
+const [error, result] = await mightFail.all([
+  Promise.resolve({ message: "success" }),
+  Promise.resolve({ message: "success2" }),
+]);
+
+if (error) {
+  // error from Promise.all
+  return
+}
+
+// result is an array of the results of the promises
+console.log(result.map((r) => r.message))
+```

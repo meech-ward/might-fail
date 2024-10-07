@@ -1,0 +1,71 @@
+# mightFailSync
+
+## Wrap Throwing Function
+
+Simply wrap any throwing function in `mightFailSync`.
+
+You will get and `Either` object that contains either an error or the result. Never both. 
+
+
+```ts
+const eitherObject = mightFailSync(() => JSON.parse("")); // JSON.parse might throw
+```
+
+But **don't** store the `Either` object directly. Instead, destructure it in the same statement.
+
+```ts
+// tuple destructuring
+const [ error, result ] = mightFailSync(() => JSON.parse(""));
+
+// object destructuring
+const { error, result } = mightFailSync(() => JSON.parse(""));
+
+// go destructuring
+// import { mightFailSync } from "might-fail/go";
+const [ result, error ] = mightFailSync(() => JSON.parse(""));
+```
+
+You can choose to destructure this object as a tuple or as an object. Or as a backwards tuple if you prefer it that way.
+
+We think that the **tuple** option is the best, but you do you.
+
+## Guard
+
+Once you've destructured the `Either` object, use guard clauses to handle the error, and handle the success case at the end.
+
+<Tabs>
+<Tab name="tuple">
+```ts
+const [error, result] = mightFailSync(() => JSON.parse("")); 
+if (error) {
+  // handle the parsing error
+  return
+}
+
+console.log('Parsed object:', result);
+```
+</Tab>
+
+<Tab name="object">
+```ts
+const {error, result} = mightFailSync(() => JSON.parse("")); // JSON.parse might throw
+if (error) {
+  // handle the parsing error
+  return
+}
+
+console.log('Parsed object:', result);
+```
+</Tab>
+<Tab name="go">
+```ts
+const [result, error] = mightFailSync(() => JSON.parse("")); // JSON.parse might throw
+if (error) {
+  // handle the parsing error
+  return
+}
+
+console.log('Parsed object:', result);
+```
+</Tab>
+</Tabs>

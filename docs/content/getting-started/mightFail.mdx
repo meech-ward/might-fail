@@ -1,0 +1,119 @@
+
+# `mightFail` Async
+
+## Wrap Promise
+
+Simply wrap any promise in `mightFail` and await the result. 
+
+You will get and `Either` object that contains either an error or the result. Never both. 
+
+```ts
+const eitherObject = await mightFail(fetch("/posts"));
+```
+
+But **don't** store the `Either` object directly. Instead, destructure it in the same statement.
+
+```ts
+// tuple destructuring
+const [ error, result ] = await mightFail(fetch("/posts"));
+
+// object destructuring
+const { error, result } = await mightFail(fetch("/posts"));
+
+// go destructuring
+// import { mightFail } from "might-fail/go";
+const [ result, error ] = await mightFail(fetch("/posts"));
+```
+
+You can choose to destructure this object as a tuple or as an object. Or as a backwards tuple if you prefer it that way.
+
+We think that the **tuple** option is the best, but you do you.
+
+## Guard
+
+Once you've awaited and destructured the `Either` object, use guard clauses to handle the error, and handle the success case at the end.
+
+<Tabs>
+
+<Tab name="tuple">
+```ts
+const [ networkError, result ] = await mightFail(fetch("/posts"));
+
+if (networkError) {
+  // handle network error
+  return;
+}
+
+if (!result.ok) {
+  // handle an error response from server
+  return;
+}
+
+const [convertToJSONError, posts] = await mightFail(
+  result.json()
+);
+
+if (convertToJSONError) {
+  // handle convertToJSONError
+  return;
+}
+
+posts.map((post) => console.log(post.title));
+```
+</Tab>
+
+<Tab name="object">
+```ts
+const { error: networkError, result } = await mightFail(fetch("/posts"));
+
+if (networkError) {
+  // handle network error
+  return;
+}
+
+if (!result.ok) {
+  // handle an error response from server
+  return;
+}
+
+const { error: convertToJSONError, result: posts } = await mightFail(
+  result.json()
+);
+
+if (convertToJSONError) {
+  // handle convertToJSONError
+  return;
+}
+
+posts.map((post) => console.log(post.title));
+```
+</Tab>
+
+<Tab name="go">
+```ts
+const [ result, networkError ] = await mightFail(fetch("/posts"));
+
+if (networkError) {
+  // handle network error
+  return;
+}
+
+if (!result.ok) {
+  // handle an error response from server
+  return;
+}
+
+const [ posts, convertToJSONError ] = await mightFail(
+  result.json()
+);
+
+if (convertToJSONError) {
+  // handle convertToJSONError
+  return;
+}
+
+posts.map((post) => console.log(post.title));
+```
+</Tab>
+</Tabs>
+

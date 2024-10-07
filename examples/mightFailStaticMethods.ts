@@ -1,5 +1,4 @@
 import { mightFail } from "../src"
-import { mightFail as mightFailTuple } from "../src/tuple"
 import { mightFail as mightFailGo } from "../src/go"
 
 async function all() {
@@ -57,7 +56,7 @@ async function allSettled() {
 allSettled()
 
 async function allTuple() {
-  const [error, result] = await mightFailTuple.all([
+  const [error, result] = await mightFail.all([
     Promise.resolve({ message: "success" }),
     Promise.resolve({ message: "success2" }),
   ])
@@ -71,7 +70,7 @@ async function allTuple() {
 allTuple()
 
 async function allTupleDestructured() {
-  const [error, [result1, result2] = []] = await mightFailTuple.all([
+  const [error, [result1, result2] = []] = await mightFail.all([
     Promise.resolve({ message: "success" }),
     Promise.resolve({ message: "success2" }),
   ])
@@ -130,7 +129,7 @@ async function any() {
 any()
 
 async function raceTuple() {
-  const [error, result] = await mightFailTuple.race([returnStringAfter("fast", 100), returnStringAfter("slow", 200)])
+  const [error, result] = await mightFail.race([returnStringAfter("fast", 100), returnStringAfter("slow", 200)])
   if (error) {
     console.error(error)
     return
@@ -141,7 +140,7 @@ async function raceTuple() {
 raceTuple()
 
 async function anyTuple() {
-  const [error, result] = await mightFailTuple.any([
+  const [error, result] = await mightFail.any([
     Promise.reject(new Error("Failure 1")),
     returnStringAfter("success", 100),
     Promise.reject(new Error("Failure 2")),

@@ -1,5 +1,5 @@
 import { describe, expect, it, test } from "vitest"
-import { mightFail } from "../../src/go/index"
+import { mightFail, Might, Fail } from "../../src/go/index"
 
 test("success returns the response", async () => {
   const [result, error] = await mightFail(Promise.resolve("success"))
@@ -120,6 +120,31 @@ describe("promise concurrent method wrappers", () => {
       expect(result).toBeUndefined()
       expect(error).toBeInstanceOf(Error)
       expect(error!.message).toBe("All promises were rejected")
+    })
+  })
+})
+
+describe("Either factories (Might & Fail)", () => {
+  describe("Might", () => {
+    it("should return an Either with the value as the result and undefined as the error", () => {
+      const [result, error] = Might(5)
+      expect(result).toEqual(5)
+      expect(error).toEqual(undefined)
+    })
+  })
+  describe("Fail", () => {
+    it("should return an Either with undefined as the result and the error as the error", () => {
+      const error = new Error("error")
+      const [failResult, failError] = Fail(error)
+      expect(failResult).toEqual(undefined)
+      expect(failError).toEqual(error)
+    })
+
+    it("should return an Either with undefined as the result and the error must be an instance of Error", () => {
+      const error = "error"
+      const [failResult, failError] = Fail(error)
+      expect(failResult).toEqual(undefined)
+      expect(failError).toEqual(new Error(error))
     })
   })
 })

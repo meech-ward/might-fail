@@ -1,0 +1,25 @@
+{
+  "plugin": [
+    "typedoc-plugin-markdown"
+  ],
+  "out": "./docs/content/jsdocs",
+  "outputFileStrategy": "members",
+  "hidePageHeader": true,
+  "hideBreadcrumbs": true,
+  "useCodeBlocks": true,
+  "expandObjects": true,
+  "expandParameters": true,
+  "parametersFormat": "table",
+  "interfacePropertiesFormat": "table",
+  "classPropertiesFormat": "table",
+  "enumMembersFormat": "table",
+  "typeDeclarationFormat": "table",
+  "propertyMembersFormat": "table",
+  "publicPath": "/",
+  "sanitizeComments": true,
+  "anchorPrefix": "markdown-header",
+  "fileExtension": ".mdx",
+  "entryFileName": "index",
+  "readme": "none",
+  "disableSources": true
+}

@@ -1,5 +1,5 @@
 import { expect, test } from "vitest"
-import { makeMightFailSync } from "../../src/tuple/index"
+import { makeMightFailSync } from "../../src/index"
 
 function somethingThatThrows(input: string) {
   if (!input) {

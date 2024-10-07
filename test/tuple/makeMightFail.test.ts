@@ -1,5 +1,5 @@
 import { expect, test } from "vitest"
-import { makeMightFail } from "../../src/tuple/index"
+import { makeMightFail } from "../../src/index"
 
 test("success returns the response", async () => {
   const resolve = (value: { message: string }) => Promise.resolve(value)

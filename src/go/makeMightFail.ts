@@ -14,7 +14,7 @@ type UnwrapPromise<T> = T extends Promise<infer U> ? U : T
  * returns a Promise that resolves with an Either. This allows for the handling of both resolved values and
  * errors in a consistent, functional way.
  *
- * @export
+
  * @template T The function type that returns a Promise.
  * @param {T} func - The async function to be wrapped. This function should return a Promise.
  * @return {Function} A new function that, when called, returns a Promise that resolves with an Either tuple.
@@ -55,7 +55,7 @@ export function makeMightFail<T extends (...args: any[]) => Promise<any>>(
  * if it executes successfully as the first element and undefined as the second, or undefined as the first element
  * and an Error as the second if the function throws.
  *
- * @export
+
  * @template T The function type that might throw an error.
  * @param {T} func - The function to be wrapped. This function might throw an exception.
  * @return {Function} A new function that, when called, returns an Either tuple with either a result or an error.
