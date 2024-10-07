@@ -1,0 +1,81 @@
+
+
+# Might & Fail
+
+Two utility functions that construct an Either and promotes working with the Either type directly.
+
+## When to use them
+
+<Important>
+The opinion of this library is that throwing Errors is a good thing. `throw` is good, but `try`, `catch`, `finally` blocks are bad.
+</Important>
+
+`mightFail` and `mightFailSync` are alternatives to `try`, `catch`, `finally` blocks. These functions catch the errors and suply a much better interface for working with errors.
+
+However, there may be times when you don't want to throw Errors in your code. I can imagine [`mjs`](https://github.com/cesanta/mjs) or [`quickjs`](https://bellard.org/quickjs/) might be good use cases for this.
+
+Or maybe you don't want to catch all errors that might be thrown because some of them need to propagate to the top of the call stack for framework reasons.
+
+So this is for when you don't want to throw errors, but you want to have functions that return an Either type.
+
+
+## Syncronous Either
+
+```ts
+import { Either, Might, Fail } from 'might-fail'
+
+export function foo(): Either<{message: string}> {
+  // ...
+
+  if (condition) {
+    //   notice that we don't have to wrap the string to an Error construct 
+    // because Fail will automatically wraps it in Error for us.
+    return Fail("Something went wrong") 
+  }
+
+  if (condition2) {
+    return Fail("Something else went wrong") 
+  }
+  
+  return Might({message: "All good"})
+}
+```
+
+<Note>
+You're not allowed to pass `undefined` to the `Might` function. 
+
+```ts
+//  Either should not have both sides as `undefined`
+// export type Either<T> = [Error, undefined] | [undefined, T]
+
+import { Either, Might } from 'might-fail/tuple'
+
+const undefinedAsResult = Might(undefined) // ❌ This is not OK. TypeScript won't allow it.
+
+const explicitlyEmpty = Might(null) // ✅ This is fine because it doesn't go against the rule of the Either concept
+```
+
+</Note>
+
+## Asyncronous Either
+
+```ts
+import { Either, Might, Fail } from 'might-fail'
+
+export async function foo(): Promise<Either<{message: string}>> {
+  // ...
+
+  if (condition) {
+    //   notice that we don't have to wrap the string to an Error construct 
+    // because Fail will automatically wraps it in Error for us.
+    return Fail("Something went wrong") 
+  }
+
+  if (condition2) {
+    return Fail("Something else went wrong") 
+  }
+  
+  return Might({message: "All good"})
+}
+```
+

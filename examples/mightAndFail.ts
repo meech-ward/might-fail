@@ -1,4 +1,4 @@
-import { mightFail, Fail, type Either, makeMightFail } from "../src"
+import { mightFail, Fail, type Either, makeMightFail, Might } from "../src"
 
 export async function someFunction(
   promise1: Promise<string | null> = Promise.resolve("success"),
@@ -12,12 +12,14 @@ export async function someFunction(
     return Fail(new Error("Could not get the the thing."))
   }
 
-  const [error2] = await mightFail(promise2)
-  if (error2) {
-    return [error2, undefined]
-  }
+  return Might({ stuff: true })
 
-  return [undefined, { stuff: true }]
+  // const [error2] = await mightFail(promise2)
+  // if (error2) {
+  //   return [error2, undefined]
+  // }
+
+  // return [undefined, { stuff: true }]
 }
 
 // async function _someFunction(
@@ -41,3 +43,12 @@ export async function someFunction(
 // }
 
 // export const someFunction = makeMightFail(_someFunction)
+
+
+async function something(): Promise<Either<string>> {
+  const [error, result] = await mightFail(Promise.resolve("success"))
+  if (error) {
+    return Fail(error)
+  }
+  return Might(result)
+}

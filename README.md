@@ -16,27 +16,27 @@ Scroll to the bottom for the motivation section (why `try,catch,finally` blocks 
 [![npm version](https://img.shields.io/npm/v/might-fail.svg)](https://www.npmjs.com/package/might-fail)
 
 
-
 ## Style 
 
 There's three different styles to choose from and they all work the same way, but you can choose your favorite API. 
 
 All examples are in the default style, but you **can** use any of the three styles.
 
-### Default 
+
+### Tuple Style
+
+```ts
+import { mightFail } from "might-fail"; // from "@might/fail"
+
+const [error, result] = await mightFail(promise);
+```
+
+### Object Style
 
 ```ts
 import { mightFail } from "might-fail"; // from "@might/fail"
 
 const { error, result } = await mightFail(promise);
-```
-
-### Tuple Style
-
-```ts
-import { mightFail } from "might-fail/tuple"; // from "@might/fail/tuple"
-
-const [error, result] = await mightFail(promise);
 ```
 
 ### Go Style
@@ -53,7 +53,7 @@ const [result, error] = await mightFail(promise);
 ### Wrap Promise in `mightFail`
 
 ```ts
-const { error, result } = await mightFail(axios.get("/posts"));
+const [ error, result ] = await mightFail(axios.get("/posts"));
 
 if (error) {
   // handle error
@@ -67,7 +67,7 @@ posts.map((post) => console.log(post.title));
 **or:**
 
 ```ts
-const { error: networkError, result } = await mightFail(fetch("/posts"));
+const [ networkError, result ] = await mightFail(fetch("/posts"));
 
 if (networkError) {
   // handle network error
@@ -79,7 +79,7 @@ if (!result.ok) {
   return;
 }
 
-const { error: convertToJSONError, result: posts } = await mightFail(
+const [ convertToJSONError, posts ] = await mightFail(
   result.json()
 );
 
@@ -95,7 +95,7 @@ posts.map((post) => console.log(post.title));
 
 ```ts
 const get = makeMightFail(axios.get);
-const { error, result } = await get("/posts");
+const [ error, result ] = await get("/posts");
 
 if (error) {
   // handle error
@@ -112,7 +112,7 @@ posts.map((post) => console.log(post.title));
 ### Wrap throwing functions in `mightFailSync`
 
 ```ts
-const {error, result} = mightFailSync(() => JSON.parse("")); // JSON.parse might throw
+const [ error, result ] = mightFailSync(() => JSON.parse("")); // JSON.parse might throw
 if (error) {
   console.error('Parsing failed:', error);
   return
@@ -128,7 +128,7 @@ function parseJSON(jsonString: string) {
 }
 const safeParseJSON = makeMightFailSync(parseJSON);
 
-const { error, result } = safeParseJSON("");
+const [ error, result ] = safeParseJSON("");
 
 if (error) {
   console.error("Parsing failed:", error);

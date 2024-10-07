@@ -1,0 +1,90 @@
+# Either Type
+
+The returned value from `await mightFail` or `mightFailSync` is an `Either` type. This type has **either** an `error` or a `result`, never both.
+
+## Error
+
+If an error is thrown from the wrapped function, then the `Either` result will only contain an `error`.
+
+<Tabs>
+<Tab name="async">
+```ts
+const [error, result] = await mightFail(Promise.reject("oh no"));
+// error is an instance of Error with the message "oh no"
+// result is undefined
+```
+</Tab>
+
+<Tab name="sync">
+```ts
+const [error, result] = mightFailSync(() => throw "oh no");
+// error is an instance of Error with the message "oh no"
+// result is undefined
+```
+</Tab>
+</Tabs>
+
+The wrapped functions will hopefully throw an error object, and your own code will hopefully throw an error object. However, if something else is thrown, then a new `Error` will be created from the thrown value.
+
+So no more `if (error instanceof Error) { ... }` checks!
+
+## Result
+
+If the wrapped function completes successfully, then the `Either` result will only contain a `result`.
+
+<Tabs>
+<Tab name="async">
+```ts
+const [error, result] = await mightFail(Promise.resolve("success"));
+// error is undefined
+// result is the result of the promise ("success" in this case)
+```
+</Tab>
+
+<Tab name="sync">
+```ts
+const [error, result] = mightFailSync(() => "success");
+// error is undefined
+// result is the result of the promise and all 
+```
+</Tab>
+</Tabs>
+
+
+## Type safety
+
+You **never** lose the type information of the result of the promise passed to `mightFail`. As long as there is no error, the result will be whatever type was resolved from the promise or returned from the sync function.
+
+```ts
+async function example() {
+  if (Math.random() > 0.5) {
+    throw new Error("oh no");
+  }
+  return { example: "success" };
+}
+
+const [error, result] = await mightFail(example());
+// error: Error | undefined
+// result: { example: string } | undefined
+if (error) {
+  // error: Error
+  return;
+}
+// result: { example: string }
+console.log(result.example);
+```
+
+## Structure
+
+The structure of the `Either` type is a tuple or an object. Or a "go" tuple if you import from `/go`
+
+```ts
+const [error, result] = await mightFail(example());
+// or 
+const {error, result} = await mightFail(example());
+// or 
+import { mightFail } from 'might-fail/go'
+const [result, error] = await mightFail(example());
+```
+
+No matter which structure you choose, the way you use the `Either` type is the same.

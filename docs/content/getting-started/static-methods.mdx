@@ -13,4 +13,23 @@
 - `await mightFail.race([])`
 - `await mightFail.any([])`
 
-These are identical to the static methods on `Promise` but they return an `Either` type.
+These are identical to the static methods on `Promise` but they return an [`Either`](/either) type.
+
+## Example
+
+```ts
+import { mightFail } from 'might-fail'
+
+const [error, result] = await mightFail.all([
+  Promise.resolve({ message: "success" }),
+  Promise.resolve({ message: "success2" }),
+]);
+
+if (error) {
+  // error from Promise.all
+  return
+}
+
+// result is an array of the results of the promises
+console.log(result.map((r) => r.message))
+```
