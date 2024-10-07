@@ -1,0 +1,61 @@
+## `makeMightFailSync`
+
+You also have the option to make your own `mightFailSync` wrapper function. Pass in any sync function to `makeMightFailSync` and it will return a `mightFailSync` wrapper function for you to use.
+
+<Note>
+This is useful in some use cases, but most of the time you should just use `mightFailSync` directly.
+</Note>
+
+<Tabs>
+<Tab name="tuple">
+```ts
+function parseJSON(jsonString: string) {
+  return JSON.parse(jsonString); // This might throw
+}
+const mightParseJSON = makeMightFailSync(parseJSON);
+
+const [error, result] = mightParseJSON("");
+
+if (error) {
+  console.error("Parsing failed:", error);
+  return;
+}
+
+console.log("Parsed object:", result);
+```
+</Tab>
+<Tab name="object">
+```ts
+function parseJSON(jsonString: string) {
+  return JSON.parse(jsonString); // This might throw
+}
+const mightParseJSON = makeMightFailSync(parseJSON);
+
+const { error, result } = mightParseJSON("");
+
+if (error) {
+  console.error("Parsing failed:", error);
+  return;
+}
+
+console.log("Parsed object:", result);
+```
+</Tab>
+<Tab name="go">
+```ts
+function parseJSON(jsonString: string) {
+  return JSON.parse(jsonString); // This might throw
+}
+const mightParseJSON = makeMightFailSync(parseJSON);
+
+const [result, error] = mightParseJSON("");
+
+if (error) {
+  console.error("Parsing failed:", error);
+  return;
+}
+
+console.log("Parsed object:", result);
+```
+</Tab>
+</Tabs>

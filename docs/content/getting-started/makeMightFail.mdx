@@ -1,0 +1,54 @@
+## `makeMightFail`
+
+You also have the option to make your own `mightFail` wrapper function. Pass in any async function to `makeMightFail` and it will return a `mightFail` wrapper function for you to use.
+
+<Note>
+This is useful in some use cases, but most of the time you should just use `mightFail` directly.
+</Note>
+
+<Tabs>
+<Tab name="tuple">
+```ts
+const get = makeMightFail(axios.get);
+const [ error, result ] = await get("/posts");
+
+if (error) {
+  // handle error
+  return;
+}
+
+const posts = result.data
+posts.map((post) => console.log(post.title));
+```
+</Tab>
+<Tab name="object">
+```ts
+const get = makeMightFail(axios.get);
+const { error, result } = await get("/posts");
+
+if (error) {
+  // handle error
+  return;
+}
+
+const posts = result.data
+posts.map((post) => console.log(post.title));
+```
+</Tab>
+<Tab name="go">
+```ts
+const get = makeMightFail(axios.get);
+const [ result, error ] = await get("/posts");
+
+if (error) {
+  // handle error
+  return;
+}
+
+const posts = result.data
+posts.map((post) => console.log(post.title));
+```
+</Tab>
+</Tabs>
+
+
