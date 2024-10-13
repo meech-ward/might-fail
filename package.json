@@ -1,6 +1,6 @@
 {
   "name": "might-fail",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "description": "Return an Either object instead of throwing an exception",
   "main": "dist/cjs/index.js",
   "module": "dist/index.js",
