@@ -3,9 +3,10 @@ import { type Either } from "./Either"
 import { createEither } from "../utils/createEither"
 import { makeProxyHandler } from "../utils/staticMethodsProxy"
 import { MightFail, MightFailFunction, NotUndefined } from "../utils/utils.type"
+import { mightFailFunction as standardMightFailFunction } from "../utils/mightFailFunction"
 
 const mightFailFunction: MightFailFunction<"go"> = async function <T>(promise: Promise<T>) {
-  const { result, error } = await standard.mightFailFunction(promise)
+  const { result, error } = await standardMightFailFunction(promise)
   return error
     ? createEither<T, "go">({ result: undefined, error }, "go")
     : createEither<T, "go">({ result, error: undefined }, "go")
@@ -45,7 +46,7 @@ const mightFailFunction: MightFailFunction<"go"> = async function <T>(promise: P
  */
 export const mightFail: MightFail<"go"> = new Proxy(
   mightFailFunction,
-  makeProxyHandler(mightFailFunction),
+  makeProxyHandler(mightFailFunction)
 ) as MightFail<"go">
 
 /**
@@ -100,3 +101,4 @@ export function Fail(error: unknown): Either<undefined> {
   const standardFail = standard.Fail(error)
   return createEither<undefined, "go">({ result: undefined, error: standardFail.error }, "go")
 }
+

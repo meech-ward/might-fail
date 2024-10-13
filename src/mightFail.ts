@@ -2,19 +2,9 @@ import { type Either } from "./Either"
 import { makeProxyHandler } from "./utils/staticMethodsProxy"
 import { handleError } from "./utils/errors"
 import { createEither } from "./utils/createEither"
-import { MightFail, MightFailFunction, NotUndefined } from "./utils/utils.type"
+import { MightFail, NotUndefined } from "./utils/utils.type"
+import { mightFailFunction } from "./utils/mightFailFunction"
 
-export const mightFailFunction: MightFailFunction<"standard"> = async function <T>(
-  promise: Promise<T>
-): Promise<Either<T>> {
-  try {
-    const result = await promise
-    return createEither<T>({ result, error: undefined })
-  } catch (err) {
-    const error = handleError(err)
-    return createEither<T>({ error, result: undefined })
-  }
-}
 
 /**
  * Wraps a promise in an Either to safely handle both its resolution and rejection. This function

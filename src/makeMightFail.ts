@@ -1,5 +1,5 @@
 import { type Either } from "./Either"
-import { mightFailSync, mightFailFunction } from "./mightFail"
+import { mightFail, mightFailSync } from "./mightFail"
 
 /**
  * Utility type that unwraps a Promise type. If T is a Promise, it extracts the type the Promise resolves to,
@@ -44,7 +44,7 @@ export function makeMightFail<T extends (...args: any[]) => Promise<any>>(
 ): (...funcArgs: Parameters<T>) => Promise<Either<UnwrapPromise<ReturnType<T>>>> {
   return async (...args: Parameters<T>) => {
     const promise = func(...args)
-    return mightFailFunction(promise) as Promise<Either<any>>
+    return mightFail(promise)
   }
 }
 
