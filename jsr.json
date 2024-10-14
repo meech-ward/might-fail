@@ -5,5 +5,12 @@
     ".": "./src/index.ts",
     "./go": "./src/go/index.ts"
   },
+  "publish": {
+    "include": [
+      "LICENSE",
+      "README.md",
+      "src/**/*.ts"
+    ]
+  },
   "license": "MIT"
 }
