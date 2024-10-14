@@ -9,17 +9,17 @@
   "exports": {
     ".": {
       "import": "./dist/index.js",
-      "require": "./dist/cjs/index.js"
+      "require": "./dist/cjs/index.js",
+      "types": "./dist/index.d.ts"
     },
     "./go": {
       "import": "./dist/go/index.js",
-      "require": "./dist/cjs/go/index.js"
+      "require": "./dist/cjs/go/index.js",
+      "types": "./dist/go/index.d.ts"
     }
   },
   "scripts": {
-    "build": "npm run build:esm && npm run build:cjs",
-    "build:esm": "tsc",
-    "build:cjs": "tsc --project tsconfig.cjs.json",
+    "build": "bun build.ts",
     "test": "vitest",
     "publish": "npm run build && npm publish",
     "typedoc": "typedoc src"
@@ -50,6 +50,10 @@
     "typescript"
   ],
   "devDependencies": {
+    "@types/node": "^22.7.5",
+    "esbuild": "^0.24.0",
+    "glob": "7.2.3",
+    "@types/glob": "^8.0.0",
     "jsdoc-to-markdown": "^9.0.2",
     "typedoc": "^0.26.8",
     "typedoc-plugin-markdown": "^4.2.9",
@@ -57,4 +61,3 @@
     "vitest": "^2.1.1"
   }
 }
-
