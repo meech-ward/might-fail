@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.6.3] - 2024-10-6
+
+### Added
+- `build.ts` to build the project with esbuild
+
+### Changed
+- the build process for npm uses a build.ts file to build the project with esbuild. This gives esm js files the .js extension which is needed for some environments.
+
+
 ## [0.6.1] - 2024-10-6
 
 ### Added
