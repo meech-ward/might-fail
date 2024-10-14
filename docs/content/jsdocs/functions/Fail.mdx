@@ -1,12 +1,18 @@
 # Function: Fail()
 
 ```ts
-function Fail(error: unknown): Either<undefined>
+function Fail<T>(error: unknown): Either<T>
 ```
 
 A constructor function that takes an error and returns an `Either` object with undefined as the result and the error as the error.
 
 The error will **always** be an instance of Error.
+
+## Type Parameters
+
+| Type Parameter | Default type |
+| ------ | ------ |
+| `T` | `any` |
 
 ## Parameters
 
@@ -16,4 +22,4 @@ The error will **always** be an instance of Error.
 
 ## Returns
 
-[`Either`](/type-aliases/Either.mdx)\<`undefined`\>
+[`Either`](/type-aliases/Either.mdx)\<`T`\>
