@@ -25,7 +25,9 @@
     "typedoc": "typedoc src"
   },
   "files": [
-    "dist"
+    "dist/**/*.js",
+    "dist/**/*.d.ts",
+    "dist/**/*.ts"
   ],
   "author": "Sam Meech-Ward <sam@meech-ward.me> (https://smw.wtf)",
   "license": "MIT",
