@@ -6,13 +6,13 @@ export type EitherMode = "standard" | "go" | "any"
 export type AnyEither<T> = StandardEither<T> | GoEither<T>
 
 export type MightFailFunction<TEitherMode extends EitherMode> = <T>(
-  promise: Promise<T>
+  promise: T 
 ) => Promise<
   TEitherMode extends "standard"
-    ? StandardEither<T>
+    ? StandardEither<Awaited<T>>
     : TEitherMode extends "go"
-    ? GoEither<T>
-    : AnyEither<T>
+    ? GoEither<Awaited<T>>
+    : AnyEither<Awaited<T>>
 >
 
 export type PromiseFulfilledResult<T> = {
