@@ -21,8 +21,8 @@
   "scripts": {
     "build": "bun build.ts",
     "test": "vitest",
-    "publish": "npm run build && npm publish",
-    "typedoc": "typedoc src"
+    "typedoc": "typedoc src",
+    "prepublishOnly": "npm run build"
   },
   "files": [
     "dist/**/*.js",
@@ -61,3 +61,4 @@
     "vitest": "^2.1.1"
   }
 }
+
