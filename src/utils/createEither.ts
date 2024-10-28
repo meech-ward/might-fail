@@ -5,7 +5,7 @@ import type { Either as GoEither } from "../go/Either"
 
 // This is not how we intended the tuple feature to work but this is the only way we could currently get TypeScript to play nice
 // this really should just be an interator on the either object, but it's much more complicated because of TS.
-// All the details are in this PR https://github.com/meech-ward/might-fail/pull/7#issuecomment-2395122593 
+// All the details are in this PR https://github.com/might-fail/ts/pull/7#issuecomment-2395122593 
 // hopefully we can change this with a future version of TS.
 
 export const createEither = <T, TEitherMode extends EitherMode = "standard">(
