@@ -22,11 +22,11 @@ import { NotUndefined } from "../utils/utils.type"
 
 export { Either, mightFail, makeMightFail, mightFailSync, makeMightFailSync, Might, Fail, type NotUndefined }
 const defaultExport = {
-   mightFail,
-   makeMightFail,
-   mightFailSync,
-   makeMightFailSync,
-   Might,
-   Fail
- }
- export default defaultExport
+  mightFail,
+  makeMightFail,
+  mightFailSync,
+  makeMightFailSync,
+  Might,
+  Fail
+}
+export default defaultExport
