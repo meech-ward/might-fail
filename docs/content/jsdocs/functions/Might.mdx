@@ -1,10 +1,10 @@
 # Function: Might()
 
 ```ts
-function Might<T>(result: NotUndefined<T>): Either<T>
+function Might<T>(result: T): Either<T>
 ```
 
-A pure constructor function that takes a non-null value and returns an `Either` object with the value as the result and undefined as the error.
+A constructor function that takes a value and returns an `Either` object with the value as the result and undefined as the error.
 
 ## Type Parameters
 
@@ -16,7 +16,7 @@ A pure constructor function that takes a non-null value and returns an `Either` 
 
 | Parameter | Type | Description |
 | ------ | ------ | ------ |
-| `result` | `NotUndefined`\<`T`\> |  |
+| `result` | `T` |  |
 
 ## Returns
 

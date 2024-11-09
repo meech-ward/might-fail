@@ -2,7 +2,7 @@ import { type Either } from "./Either"
 import { makeProxyHandler } from "./utils/staticMethodsProxy"
 import { handleError } from "./utils/errors"
 import { createEither } from "./utils/createEither"
-import { MightFail, NotUndefined } from "./utils/utils.type"
+import { MightFail } from "./utils/utils.type"
 import { mightFailFunction } from "./utils/mightFailFunction"
 
 
@@ -75,11 +75,11 @@ export const mightFailSync = function mightFailSync<T>(func: () => T): Either<T>
 }
 
 /**
- * A pure constructor function that takes a non-null value and returns an `Either` object with the value as the result and undefined as the error.
+ * A constructor function that takes a value and returns an `Either` object with the value as the result and undefined as the error.
  *
  * @param result
  */
-export const Might = function Might<T>(result: NotUndefined<T>): Either<T> {
+export const Might = function Might<T>(result: T): Either<T> {
   return createEither<T>({ result, error: undefined })
 }
 
