@@ -101,4 +101,3 @@ export function Fail(error: unknown): Either<undefined> {
   const standardFail = standard.Fail(error)
   return createEither<undefined, "go">({ result: undefined, error: standardFail.error }, "go")
 }
-

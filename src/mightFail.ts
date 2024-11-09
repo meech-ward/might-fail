@@ -5,7 +5,6 @@ import { createEither } from "./utils/createEither"
 import { MightFail } from "./utils/utils.type"
 import { mightFailFunction } from "./utils/mightFailFunction"
 
-
 /**
  * Wraps a promise in an Either to safely handle both its resolution and rejection. This function
  * takes a Promise of type T and returns a Promise which resolves with an object. This object
@@ -93,4 +92,3 @@ export const Might = function Might<T>(result: T): Either<T> {
 export const Fail = function Fail<T = any>(error: unknown): Either<T> {
   return createEither<T>({ result: undefined, error: handleError(error) })
 }
-
