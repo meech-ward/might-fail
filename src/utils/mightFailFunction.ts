@@ -5,7 +5,7 @@ import { MightFailFunction } from "./utils.type"
 
 export const mightFailFunction: MightFailFunction<"standard"> = async function <T>(
   promise: Promise<T>
-): Promise<Either<T>> {
+): Promise<Either<Awaited<T>>> {
   try {
     const result = await promise
     return createEither<T>({ result, error: undefined })

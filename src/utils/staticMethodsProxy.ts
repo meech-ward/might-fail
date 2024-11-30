@@ -1,7 +1,7 @@
 import { EitherMode, MightFailFunction } from "./utils.type"
 
 export const makeProxyHandler = <TMightFailFunction extends MightFailFunction<EitherMode>>(
-  mightFailFunction: TMightFailFunction,
+  mightFailFunction: TMightFailFunction
 ) => ({
   get(_: TMightFailFunction, property: string) {
     if (Object.getOwnPropertyDescriptor(Promise, property) === undefined) {
@@ -18,5 +18,5 @@ export const makeProxyHandler = <TMightFailFunction extends MightFailFunction<Ei
       const promise = value.apply(Promise, args)
       return mightFailFunction(promise)
     }
-  },
+  }
 })

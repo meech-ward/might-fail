@@ -21,11 +21,11 @@ import { makeMightFail, makeMightFailSync } from "./makeMightFail"
 
 export { Either, mightFail, makeMightFail, mightFailSync, makeMightFailSync, Might, Fail }
 const defaultExport = {
-   mightFail,
-   makeMightFail,
-   mightFailSync,
-   makeMightFailSync,
-   Might,
-   Fail
- }
- export default defaultExport
+  mightFail,
+  makeMightFail,
+  mightFailSync,
+  makeMightFailSync,
+  Might,
+  Fail
+}
+export default defaultExport
