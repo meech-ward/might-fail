@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.7.2] - 2024-11-30
+
+### Changed
+- Removed `NotUndefined` type. https://github.com/might-fail/ts/issues/20
+
 ## [0.7.0] - 2024-10-27
 
 
