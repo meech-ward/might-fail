@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.7.0] - 2024-10-27
+
+
+### Changed
+- The either type now accepts type without promise and returns the awaited type.
+
 ## [0.6.3] - 2024-10-6
 
 ### Added

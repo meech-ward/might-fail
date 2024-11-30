@@ -1,7 +1,7 @@
 # Function: mightFail()
 
 ```ts
-function mightFail<T>(promise: Promise<T>): Promise<Either<T>>
+function mightFail<T>(promise: T): Promise<Either<Awaited<T>>>
 ```
 
 Wraps a promise in an Either to safely handle both its resolution and rejection. This function
@@ -19,11 +19,11 @@ if the promise is rejected.
 
 | Parameter | Type | Description |
 | ------ | ------ | ------ |
-| `promise` | `Promise`\<`T`\> | The promise to be wrapped in an Either. This is an asynchronous operation that should resolve with a value of type T or reject with an Error. |
+| `promise` | `T` | The promise to be wrapped in an Either. This is an asynchronous operation that should resolve with a value of type T or reject with an Error. |
 
 ## Returns
 
-`Promise`\<[`Either`](/type-aliases/Either.mdx)\<`T`\>\>
+`Promise`\<[`Either`](/type-aliases/Either.mdx)\<`Awaited`\<`T`\>\>\>
 
 A Promise that resolves with an Either. This Either is a `Success<T>` with
 the 'result' property set to the value resolved by the promise if successful, and 'error' as undefined.

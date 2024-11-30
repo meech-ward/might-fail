@@ -1,6 +1,6 @@
 {
   "name": "might-fail",
-  "version": "0.6.3",
+  "version": "0.7.1",
   "description": "A better way to handle errors in JavaScript and TypeScript. Handle async and sync errors without `try` and `catch` blocks.",
   "main": "dist/cjs/index.js",
   "module": "dist/index.js",
@@ -21,8 +21,8 @@
   "scripts": {
     "build": "bun build.ts",
     "test": "vitest",
-    "publish": "npm run build && npm publish",
-    "typedoc": "typedoc src"
+    "typedoc": "typedoc src",
+    "prepublishOnly": "npm run build"
   },
   "files": [
     "dist/**/*.js",
@@ -33,7 +33,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/meech-ward/might-fail.git"
+    "url": "git+https://github.com/might-fail/ts.git"
   },
   "keywords": [
     "mightfail",
@@ -61,3 +61,4 @@
     "vitest": "^2.1.1"
   }
 }
+

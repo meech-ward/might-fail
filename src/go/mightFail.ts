@@ -5,11 +5,11 @@ import { makeProxyHandler } from "../utils/staticMethodsProxy"
 import { MightFail, MightFailFunction } from "../utils/utils.type"
 import { mightFailFunction as standardMightFailFunction } from "../utils/mightFailFunction"
 
-const mightFailFunction: MightFailFunction<"go"> = async function <T>(promise: Promise<T>) {
+const mightFailFunction: MightFailFunction<"go"> = async function <T>(promise: T) {
   const { result, error } = await standardMightFailFunction(promise)
   return error
-    ? createEither<T, "go">({ result: undefined, error }, "go")
-    : createEither<T, "go">({ result, error: undefined }, "go")
+    ? createEither<Awaited<T>, "go">({ result: undefined, error }, "go")
+    : createEither<Awaited<T>, "go">({ result, error: undefined }, "go")
 }
 
 /**

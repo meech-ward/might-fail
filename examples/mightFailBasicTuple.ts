@@ -12,7 +12,7 @@ async function success() {
 success()
 
 async function error() {
-  const [error, result] = await mightFail<{ message: string }>(Promise.reject("error"))
+  const [error, result] = await mightFail(new Promise<{ message: string }>((res, rej) => rej("error")))
   if (error) {
     console.error(error)
     return
@@ -21,3 +21,4 @@ async function error() {
 }
 
 error()
+

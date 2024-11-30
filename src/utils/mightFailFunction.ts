@@ -4,13 +4,13 @@ import { createEither } from "./createEither"
 import { MightFailFunction } from "./utils.type"
 
 export const mightFailFunction: MightFailFunction<"standard"> = async function <T>(
-  promise: Promise<T>
+  promise: T
 ): Promise<Either<Awaited<T>>> {
   try {
     const result = await promise
-    return createEither<T>({ result, error: undefined })
+    return createEither<Awaited<T>>({ result, error: undefined })
   } catch (err) {
     const error = handleError(err)
-    return createEither<T>({ error, result: undefined })
+    return createEither<Awaited<T>>({ error, result: undefined })
   }
 }
