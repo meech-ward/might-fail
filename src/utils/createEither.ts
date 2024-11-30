@@ -4,7 +4,7 @@ import type { Either as GoEither } from "../go/Either"
 
 // This is not how we intended the tuple feature to work but this is the only way we could currently get TypeScript to play nice
 // this really should just be an interator on the either object, but it's much more complicated because of TS.
-// All the details are in this PR https://github.com/might-fail/ts/pull/7#issuecomment-2395122593 
+// All the details are in this PR https://github.com/might-fail/ts/pull/7#issuecomment-2395122593
 // hopefully we can change this with a future version of TS.
 
 export const createEither = <T, TEitherMode extends EitherMode = "standard">(
@@ -21,11 +21,7 @@ export const createEither = <T, TEitherMode extends EitherMode = "standard">(
         result: T
       },
   eitherMode: EitherMode = "standard"
-): TEitherMode extends "standard"
-  ? StandardEither<Awaited<T>>
-  : TEitherMode extends "go"
-    ? GoEither<Awaited<T>>
-    : AnyEither<Awaited<T>> => {
+): TEitherMode extends "standard" ? StandardEither<T> : TEitherMode extends "go" ? GoEither<T> : AnyEither<T> => {
   if (error) {
     const array = eitherMode === "standard" ? [error, undefined] : [undefined, error]
     const obj = {} as any
@@ -77,3 +73,4 @@ const createArrayProxy = <T>(obj: any, array: (undefined | Error | T)[]) => {
     }
   })
 }
+
