@@ -6,13 +6,13 @@ export type EitherMode = "standard" | "go" | "any"
 export type AnyEither<T> = StandardEither<T> | GoEither<T>
 
 export type MightFailFunction<TEitherMode extends EitherMode> = <T>(
-  promise: Promise<T>
+  promise: T
 ) => Promise<
   TEitherMode extends "standard"
     ? StandardEither<Awaited<T>>
     : TEitherMode extends "go"
-      ? GoEither<Awaited<T>>
-      : AnyEither<Awaited<T>>
+    ? GoEither<Awaited<T>>
+    : AnyEither<Awaited<T>>
 >
 
 export type PromiseFulfilledResult<T> = {
@@ -43,8 +43,8 @@ export interface PromiseStaticMethods<TEitherMode extends EitherMode> {
     TEitherMode extends "standard"
       ? Awaited<StandardEither<T[]>>
       : TEitherMode extends "go"
-        ? Awaited<GoEither<T[]>>
-        : Awaited<AnyEither<T[]>>
+      ? Awaited<GoEither<T[]>>
+      : Awaited<AnyEither<T[]>>
   >
 
   /**
@@ -59,8 +59,8 @@ export interface PromiseStaticMethods<TEitherMode extends EitherMode> {
     TEitherMode extends "standard"
       ? StandardEither<{ -readonly [P in keyof T]: Awaited<T[P]> }>
       : TEitherMode extends "go"
-        ? GoEither<{ -readonly [P in keyof T]: Awaited<T[P]> }>
-        : AnyEither<{ -readonly [P in keyof T]: Awaited<T[P]> }>
+      ? GoEither<{ -readonly [P in keyof T]: Awaited<T[P]> }>
+      : AnyEither<{ -readonly [P in keyof T]: Awaited<T[P]> }>
   >
 
   /**
@@ -76,8 +76,8 @@ export interface PromiseStaticMethods<TEitherMode extends EitherMode> {
     TEitherMode extends "standard"
       ? Awaited<StandardEither<T>>
       : TEitherMode extends "go"
-        ? Awaited<GoEither<T>>
-        : Awaited<AnyEither<T>>
+      ? Awaited<GoEither<T>>
+      : Awaited<AnyEither<T>>
   >
 
   /**
@@ -92,8 +92,8 @@ export interface PromiseStaticMethods<TEitherMode extends EitherMode> {
     TEitherMode extends "standard"
       ? Awaited<StandardEither<T[number]>>
       : TEitherMode extends "go"
-        ? Awaited<GoEither<T[number]>>
-        : Awaited<AnyEither<T[number]>>
+      ? Awaited<GoEither<T[number]>>
+      : Awaited<AnyEither<T[number]>>
   >
 
   /**
@@ -108,8 +108,8 @@ export interface PromiseStaticMethods<TEitherMode extends EitherMode> {
     TEitherMode extends "standard"
       ? StandardEither<{ -readonly [P in keyof T]: PromiseSettledResult<Awaited<T[P]>> }>
       : TEitherMode extends "go"
-        ? GoEither<{ -readonly [P in keyof T]: PromiseSettledResult<Awaited<T[P]>> }>
-        : AnyEither<{ -readonly [P in keyof T]: PromiseSettledResult<Awaited<T[P]>> }>
+      ? GoEither<{ -readonly [P in keyof T]: PromiseSettledResult<Awaited<T[P]>> }>
+      : AnyEither<{ -readonly [P in keyof T]: PromiseSettledResult<Awaited<T[P]>> }>
   >
 
   /**
@@ -124,8 +124,8 @@ export interface PromiseStaticMethods<TEitherMode extends EitherMode> {
     TEitherMode extends "standard"
       ? StandardEither<PromiseSettledResult<Awaited<T>>[]>
       : TEitherMode extends "go"
-        ? GoEither<PromiseSettledResult<Awaited<T>>[]>
-        : AnyEither<PromiseSettledResult<Awaited<T>>[]>
+      ? GoEither<PromiseSettledResult<Awaited<T>>[]>
+      : AnyEither<PromiseSettledResult<Awaited<T>>[]>
   >
 
   /**
@@ -141,8 +141,8 @@ export interface PromiseStaticMethods<TEitherMode extends EitherMode> {
     TEitherMode extends "standard"
       ? StandardEither<Awaited<T[number]>>
       : TEitherMode extends "go"
-        ? GoEither<Awaited<T[number]>>
-        : AnyEither<Awaited<T[number]>>
+      ? GoEither<Awaited<T[number]>>
+      : AnyEither<Awaited<T[number]>>
   >
 
   /**
@@ -158,7 +158,8 @@ export interface PromiseStaticMethods<TEitherMode extends EitherMode> {
     TEitherMode extends "standard"
       ? StandardEither<Awaited<T>>
       : TEitherMode extends "go"
-        ? GoEither<Awaited<T>>
-        : AnyEither<Awaited<T>>
+      ? GoEither<Awaited<T>>
+      : AnyEither<Awaited<T>>
   >
 }
+
