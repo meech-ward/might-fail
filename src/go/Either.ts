@@ -4,12 +4,13 @@
  * an object that either contains a 'result' value of type T (if successful), or an 'error' of type Error.
  *
  * @template T The type of the result value.
+ * @template E extends Error - The error type that is scoped to any type extending type Error.
  */
-export type Either<T> =
+export type Either<T, E extends Error = Error> =
   | ({
-      error: Error
+      error: E
       result: undefined
-    } & [undefined, Error])
+    } & [undefined, E])
   | ({
       error: undefined
       result: T

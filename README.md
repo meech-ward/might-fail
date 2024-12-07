@@ -163,12 +163,10 @@ The structure of the `Either` type can be "standard", "tuple", or "go" which you
 
 - [`Promise.race`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/race)
 - [`Promise.all`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/all)
-- [`Promise.allSettled`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/allSettled)
 - [`Promise.any`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/any)
 
 
 - `await mightFail.all([])`
-- `await mightFail.allSettled([])`
 - `await mightFail.race([])`
 - `await mightFail.any([])`
 

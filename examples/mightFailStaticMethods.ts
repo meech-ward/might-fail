@@ -4,7 +4,7 @@ import { mightFail as mightFailGo } from "../src/go"
 async function all() {
   const { error, result } = await mightFail.all([
     Promise.resolve({ message: "success" }),
-    Promise.resolve({ message: "success2" }),
+    Promise.resolve({ message: "success2" })
   ])
   if (error) {
     console.error(error)
@@ -30,7 +30,7 @@ allDifferentTypes()
 async function allDestructured() {
   const { error, result: [result1, result2] = [] } = await mightFail.all([
     Promise.resolve({ message: "success" }),
-    Promise.resolve(5),
+    Promise.resolve(5)
   ])
   if (error) {
     console.error(error)
@@ -41,24 +41,10 @@ async function allDestructured() {
 
 allDestructured()
 
-async function allSettled() {
-  const { error, result } = await mightFail.allSettled([
-    Promise.resolve({ message: "success" }),
-    Promise.resolve({ message: "success2" }),
-  ])
-  if (error) {
-    console.error(error)
-    return
-  }
-  console.log(result.map((r) => r.status))
-}
-
-allSettled()
-
 async function allTuple() {
   const [error, result] = await mightFail.all([
     Promise.resolve({ message: "success" }),
-    Promise.resolve({ message: "success2" }),
+    Promise.resolve({ message: "success2" })
   ])
   if (error) {
     console.error(error)
@@ -72,7 +58,7 @@ allTuple()
 async function allTupleDestructured() {
   const [error, [result1, result2] = []] = await mightFail.all([
     Promise.resolve({ message: "success" }),
-    Promise.resolve({ message: "success2" }),
+    Promise.resolve({ message: "success2" })
   ])
   if (error) {
     console.error(error)
@@ -86,7 +72,7 @@ allTupleDestructured()
 async function allGo() {
   const [result, error] = await mightFailGo.all([
     Promise.resolve({ message: "success" }),
-    Promise.resolve({ message: "success2" }),
+    Promise.resolve({ message: "success2" })
   ])
   if (error) {
     console.error(error)
@@ -117,7 +103,7 @@ async function any() {
   const { error, result } = await mightFail.any([
     Promise.reject(new Error("Failure 1")),
     returnStringAfter("success", 100),
-    Promise.reject(new Error("Failure 2")),
+    Promise.reject(new Error("Failure 2"))
   ])
   if (error) {
     console.error(error)
@@ -143,7 +129,7 @@ async function anyTuple() {
   const [error, result] = await mightFail.any([
     Promise.reject(new Error("Failure 1")),
     returnStringAfter("success", 100),
-    Promise.reject(new Error("Failure 2")),
+    Promise.reject(new Error("Failure 2"))
   ])
   if (error) {
     console.error(error)
@@ -169,7 +155,7 @@ async function anyGo() {
   const [result, error] = await mightFailGo.any([
     Promise.reject(new Error("Failure 1")),
     returnStringAfter("success", 100),
-    Promise.reject(new Error("Failure 2")),
+    Promise.reject(new Error("Failure 2"))
   ])
   if (error) {
     console.error(error)
