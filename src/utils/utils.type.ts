@@ -3,16 +3,16 @@ import type { Either as GoEither } from "../go/Either"
 
 export type EitherMode = "standard" | "go" | "any"
 
-export type AnyEither<T> = StandardEither<T> | GoEither<T>
+export type AnyEither<T, E extends Error = Error> = StandardEither<T, E> | GoEither<T, E>
 
-export type MightFailFunction<TEitherMode extends EitherMode> = <T>(
+export type MightFailFunction<TEitherMode extends EitherMode> = <T, E extends Error = Error>(
   promise: T
 ) => Promise<
   TEitherMode extends "standard"
-    ? StandardEither<Awaited<T>>
+    ? StandardEither<Awaited<T>, E>
     : TEitherMode extends "go"
-      ? GoEither<Awaited<T>>
-      : AnyEither<Awaited<T>>
+      ? GoEither<Awaited<T>, E>
+      : AnyEither<Awaited<T>, E>
 >
 
 export type PromiseFulfilledResult<T> = {
@@ -108,10 +108,10 @@ export interface PromiseStaticMethods<TEitherMode extends EitherMode> {
     values: T
   ): Promise<
     TEitherMode extends "standard"
-      ? StandardEither<Awaited<T[number]>>
+      ? StandardEither<Awaited<T[number]>, AggregateError>
       : TEitherMode extends "go"
-        ? GoEither<Awaited<T[number]>>
-        : AnyEither<Awaited<T[number]>>
+        ? GoEither<Awaited<T[number]>, AggregateError>
+        : AnyEither<Awaited<T[number]>, AggregateError>
   >
 
   /**
@@ -125,9 +125,9 @@ export interface PromiseStaticMethods<TEitherMode extends EitherMode> {
     values: Iterable<T | PromiseLike<T>>
   ): Promise<
     TEitherMode extends "standard"
-      ? StandardEither<Awaited<T>>
+      ? StandardEither<Awaited<T>, AggregateError>
       : TEitherMode extends "go"
-        ? GoEither<Awaited<T>>
-        : AnyEither<Awaited<T>>
+        ? GoEither<Awaited<T>, AggregateError>
+        : AnyEither<Awaited<T>, AggregateError>
   >
 }

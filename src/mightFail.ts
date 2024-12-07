@@ -63,13 +63,13 @@ export const mightFail: MightFail<"standard"> = new Proxy(
  * }
  * console.log('Parsed object:', result);
  */
-export const mightFailSync = function mightFailSync<T>(func: () => T): Either<T> {
+export const mightFailSync = function mightFailSync<T, E extends Error = Error>(func: () => T): Either<T, E> {
   try {
     const result = func()
-    return createEither<T>({ error: undefined, result })
+    return createEither<T, E>({ error: undefined, result })
   } catch (err) {
-    const error = handleError(err)
-    return createEither<T>({ error, result: undefined })
+    const error = handleError<E>(err)
+    return createEither<T, E>({ error, result: undefined })
   }
 }
 

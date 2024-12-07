@@ -7,13 +7,13 @@ import type { Either as GoEither } from "../go/Either"
 // All the details are in this PR https://github.com/might-fail/ts/pull/7#issuecomment-2395122593
 // hopefully we can change this with a future version of TS.
 
-export const createEither = <T, TEitherMode extends EitherMode = "standard">(
+export const createEither = <T, E extends Error = Error, TEitherMode extends EitherMode = "standard">(
   {
     result,
     error
   }:
     | {
-        error: Error
+        error: E
         result: undefined
       }
     | {
@@ -21,22 +21,26 @@ export const createEither = <T, TEitherMode extends EitherMode = "standard">(
         result: T
       },
   eitherMode: EitherMode = "standard"
-): TEitherMode extends "standard" ? StandardEither<T> : TEitherMode extends "go" ? GoEither<T> : AnyEither<T> => {
+): TEitherMode extends "standard"
+  ? StandardEither<T, E>
+  : TEitherMode extends "go"
+    ? GoEither<T, E>
+    : AnyEither<T, E> => {
   if (error) {
     const array = eitherMode === "standard" ? [error, undefined] : [undefined, error]
     const obj = {} as any
     obj.error = error
     obj.result = undefined
-    return createArrayProxy<T>(obj, array)
+    return createArrayProxy<T, E>(obj, array)
   }
   const array = eitherMode === "standard" ? [undefined, result] : [result, undefined]
   const obj = {} as any
   obj.error = undefined
   obj.result = result
-  return createArrayProxy<T>(obj, array)
+  return createArrayProxy<T, E>(obj, array)
 }
 
-const createArrayProxy = <T>(obj: any, array: (undefined | Error | T)[]) => {
+const createArrayProxy = <T, E extends Error = Error>(obj: any, array: (undefined | Error | T)[]) => {
   // Proxy to intercept array methods and properties
   return new Proxy(obj, {
     get(target, prop, receiver) {
@@ -73,4 +77,3 @@ const createArrayProxy = <T>(obj: any, array: (undefined | Error | T)[]) => {
     }
   })
 }
-
