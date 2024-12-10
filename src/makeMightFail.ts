@@ -39,9 +39,9 @@ type UnwrapPromise<T> = T extends Promise<infer U> ? U : T
  * }
  * console.log('Fetched data:', result);
  */
-export function makeMightFail<T extends (...args: any[]) => Promise<any>>(
+export function makeMightFail<T extends (...args: any[]) => Promise<any>, E extends Error = Error>(
   func: T
-): (...funcArgs: Parameters<T>) => Promise<Either<UnwrapPromise<ReturnType<T>>>> {
+): (...funcArgs: Parameters<T>) => Promise<Either<UnwrapPromise<ReturnType<T>>, E>> {
   return async (...args: Parameters<T>) => {
     const promise = func(...args)
     return mightFail(promise)
@@ -73,9 +73,9 @@ export function makeMightFail<T extends (...args: any[]) => Promise<any>>(
  * }
  * console.log('Parsed object:', result);
  */
-export function makeMightFailSync<T extends (...args: any[]) => any>(
+export function makeMightFailSync<T extends (...args: any[]) => any, E extends Error = Error>(
   func: T
-): (...funcArgs: Parameters<T>) => Either<ReturnType<T>> {
+): (...funcArgs: Parameters<T>) => Either<ReturnType<T>, E> {
   return (...args: Parameters<T>) => {
     const throwingFunction = () => func(...args)
     return mightFailSync(throwingFunction)
