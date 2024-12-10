@@ -9,38 +9,36 @@ Everything below is theres
   Copyright (c) 2022 Taishi Naritomi
 */
 
-import { exec } from 'child_process'
-import fs from 'fs'
-import path from 'path'
-import { build } from 'esbuild'
-import type { Plugin, PluginBuild, BuildOptions } from 'esbuild'
-import glob from 'glob'
+import { exec } from "child_process"
+import fs from "fs"
+import path from "path"
+import { build } from "esbuild"
+import type { Plugin, PluginBuild, BuildOptions } from "esbuild"
+import glob from "glob"
 
-
-
-const entryPoints = glob.sync('./src/**/*.ts', {
-  ignore: ['./src/**/*.test.ts', './src/mod.ts', './src/middleware.ts', './src/deno/**/*.ts'],
+const entryPoints = glob.sync("./src/**/*.ts", {
+  ignore: ["./src/**/*.test.ts", "./src/mod.ts", "./src/middleware.ts", "./src/deno/**/*.ts"]
 })
 
 /*
   This plugin is inspired by the following.
   https://github.com/evanw/esbuild/issues/622#issuecomment-769462611
 */
-const addExtension = (extension: string = '.js', fileExtension: string = '.ts'): Plugin => ({
-  name: 'add-extension',
+const addExtension = (extension: string = ".js", fileExtension: string = ".ts"): Plugin => ({
+  name: "add-extension",
   setup(build: PluginBuild) {
     build.onResolve({ filter: /.*/ }, (args) => {
       if (args.importer) {
         const p = path.join(args.resolveDir, args.path)
         let tsPath = `${p}${fileExtension}`
 
-        let importPath = ''
+        let importPath = ""
         if (fs.existsSync(tsPath)) {
           importPath = args.path + extension
         } else {
           tsPath = path.join(args.resolveDir, args.path, `index${fileExtension}`)
           if (fs.existsSync(tsPath)) {
-            if (args.path.endsWith('/')) {
+            if (args.path.endsWith("/")) {
               importPath = `${args.path}index${extension}`
             } else {
               importPath = `${args.path}/index${extension}`
@@ -50,33 +48,34 @@ const addExtension = (extension: string = '.js', fileExtension: string = '.ts'):
         return { path: importPath, external: true }
       }
     })
-  },
+  }
 })
 
 const commonOptions: BuildOptions = {
   entryPoints,
-  logLevel: 'info',
-  platform: 'node',
-  tsconfig: 'tsconfig.json',
+  logLevel: "info",
+  platform: "node",
+  tsconfig: "tsconfig.json",
+  target: "es2022"
 }
 
 const cjsBuild = () =>
   build({
     ...commonOptions,
-    outbase: './src',
-    outdir: './dist/cjs',
-    format: 'cjs',
-    tsconfig: 'tsconfig.cjs.json',
+    outbase: "./src",
+    outdir: "./dist/cjs",
+    format: "cjs",
+    tsconfig: "tsconfig.cjs.json"
   })
 
 const esmBuild = () =>
   build({
     ...commonOptions,
     bundle: true,
-    outbase: './src',
-    outdir: './dist',
-    format: 'esm',
-    plugins: [addExtension('.js')],
+    outbase: "./src",
+    outdir: "./dist",
+    format: "esm",
+    plugins: [addExtension(".js")]
   })
 
 Promise.all([esmBuild(), cjsBuild()])

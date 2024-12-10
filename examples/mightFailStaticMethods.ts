@@ -100,11 +100,13 @@ async function race() {
 race()
 
 async function any() {
-  const { error, result } = await mightFail.any([
+  const promises = [
     Promise.reject(new Error("Failure 1")),
     returnStringAfter("success", 100),
     Promise.reject(new Error("Failure 2"))
-  ])
+  ]
+
+  const { error, result } = await mightFail.any<typeof promises>(promises)
   if (error) {
     console.error(error)
     return

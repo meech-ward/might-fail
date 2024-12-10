@@ -1,13 +1,13 @@
 {
   "compilerOptions": {
-    "target": "es2020",
+    "target": "es2022",
     "declaration": true,
     "moduleResolution": "node",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "skipLibCheck": false,
-    "lib": ["es2020", "dom"],
+    "lib": ["es2022", "dom"],
     "declarationMap": true,
     "sourceMap": true,
     "outDir": "./dist",
@@ -17,7 +17,7 @@
     "isolatedModules": true,
   },
   "include": [
-    "src/**/*"
+    "src/**/*",
   ],
   "exclude": [
     "node_modules",

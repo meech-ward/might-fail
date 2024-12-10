@@ -89,6 +89,6 @@ export const Might = function Might<T>(result: T): Either<T> {
  *
  * @param error
  */
-export const Fail = function Fail<T = any, E extends Error = Error>(error: unknown): Either<undefined, E> {
-  return createEither<undefined, E>({ result: undefined, error: handleError<E>(error) })
+export const Fail = function Fail<T = unknown, E extends Error = Error>(error: unknown): Either<T, E> {
+  return createEither<T, E>({ result: undefined, error: handleError<E>(error) })
 }
