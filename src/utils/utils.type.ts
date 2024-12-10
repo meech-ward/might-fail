@@ -3,16 +3,16 @@ import type { Either as GoEither } from "../go/Either"
 
 export type EitherMode = "standard" | "go" | "any"
 
-export type AnyEither<T> = StandardEither<T> | GoEither<T>
+export type AnyEither<T, E extends Error = Error> = StandardEither<T, E> | GoEither<T, E>
 
-export type MightFailFunction<TEitherMode extends EitherMode> = <T>(
+export type MightFailFunction<TEitherMode extends EitherMode> = <T, E extends Error = Error>(
   promise: T
 ) => Promise<
   TEitherMode extends "standard"
-    ? StandardEither<Awaited<T>>
+    ? StandardEither<Awaited<T>, E>
     : TEitherMode extends "go"
-    ? GoEither<Awaited<T>>
-    : AnyEither<Awaited<T>>
+      ? GoEither<Awaited<T>, E>
+      : AnyEither<Awaited<T>, E>
 >
 
 export type PromiseFulfilledResult<T> = {
@@ -37,30 +37,31 @@ export interface PromiseStaticMethods<TEitherMode extends EitherMode> {
    * @template T The type of the resolved values
    * @return {Promise} - Promise<Awaited<Either<T[]>>>
    */
+  all<T extends readonly unknown[] | []>(
+    values: T
+  ): Promise<
+    TEitherMode extends "standard"
+      ? Awaited<StandardEither<{ -readonly [P in keyof T]: Awaited<T[P]> }>>
+      : TEitherMode extends "go"
+        ? Awaited<GoEither<{ -readonly [P in keyof T]: Awaited<T[P]> }>>
+        : Awaited<AnyEither<{ -readonly [P in keyof T]: Awaited<T[P]> }>>
+  >
+
+  /**
+   * (From lib.es2025.iterable.d.ts)
+   * Wraps a Promise.all call in a mightFail function.
+   * @param values - An iterable of promises
+   * @template T The type of the resolved values
+   * @return {Promise} - Promise<Awaited<Either<T[]>>>
+   */
   all<T>(
     values: Iterable<T | PromiseLike<T>>
   ): Promise<
     TEitherMode extends "standard"
       ? Awaited<StandardEither<T[]>>
       : TEitherMode extends "go"
-      ? Awaited<GoEither<T[]>>
-      : Awaited<AnyEither<T[]>>
-  >
-
-  /**
-   * Wraps a Promise.all call in a mightFail function.
-   * @param values - An array of promises
-   * @template T The type of the resolved values
-   * @return {Promise} - Promise<Either<{ -readonly [P in keyof T]: Awaited<T[P]>; }>>
-   */
-  all<T extends readonly unknown[] | []>(
-    values: T
-  ): Promise<
-    TEitherMode extends "standard"
-      ? StandardEither<{ -readonly [P in keyof T]: Awaited<T[P]> }>
-      : TEitherMode extends "go"
-      ? GoEither<{ -readonly [P in keyof T]: Awaited<T[P]> }>
-      : AnyEither<{ -readonly [P in keyof T]: Awaited<T[P]> }>
+        ? Awaited<GoEither<T[]>>
+        : Awaited<AnyEither<T[]>>
   >
 
   /**
@@ -76,8 +77,8 @@ export interface PromiseStaticMethods<TEitherMode extends EitherMode> {
     TEitherMode extends "standard"
       ? Awaited<StandardEither<T>>
       : TEitherMode extends "go"
-      ? Awaited<GoEither<T>>
-      : Awaited<AnyEither<T>>
+        ? Awaited<GoEither<T>>
+        : Awaited<AnyEither<T>>
   >
 
   /**
@@ -92,40 +93,8 @@ export interface PromiseStaticMethods<TEitherMode extends EitherMode> {
     TEitherMode extends "standard"
       ? Awaited<StandardEither<T[number]>>
       : TEitherMode extends "go"
-      ? Awaited<GoEither<T[number]>>
-      : Awaited<AnyEither<T[number]>>
-  >
-
-  /**
-   * Wraps a Promise.allSettled call in a mightFail function.
-   * @param values - An array of promises
-   * @template T The type of the resolved values
-   * @return {Promise} - Promise<Either<{ -readonly [P in keyof T]: PromiseSettledResult<Awaited<T[P]>>}>>
-   */
-  allSettled<T extends readonly unknown[] | []>(
-    values: T
-  ): Promise<
-    TEitherMode extends "standard"
-      ? StandardEither<{ -readonly [P in keyof T]: PromiseSettledResult<Awaited<T[P]>> }>
-      : TEitherMode extends "go"
-      ? GoEither<{ -readonly [P in keyof T]: PromiseSettledResult<Awaited<T[P]>> }>
-      : AnyEither<{ -readonly [P in keyof T]: PromiseSettledResult<Awaited<T[P]>> }>
-  >
-
-  /**
-   * Wraps a Promise.allSettled call in a mightFail function.
-   * @param values - An iterable of promises
-   * @template T The type of the resolved values
-   * @return {Promise} - Promise<Either<PromiseSettledResult<Awaited<T>>[]>>
-   */
-  allSettled<T>(
-    values: Iterable<T | PromiseLike<T>>
-  ): Promise<
-    TEitherMode extends "standard"
-      ? StandardEither<PromiseSettledResult<Awaited<T>>[]>
-      : TEitherMode extends "go"
-      ? GoEither<PromiseSettledResult<Awaited<T>>[]>
-      : AnyEither<PromiseSettledResult<Awaited<T>>[]>
+        ? Awaited<GoEither<T[number]>>
+        : Awaited<AnyEither<T[number]>>
   >
 
   /**
@@ -139,10 +108,10 @@ export interface PromiseStaticMethods<TEitherMode extends EitherMode> {
     values: T
   ): Promise<
     TEitherMode extends "standard"
-      ? StandardEither<Awaited<T[number]>>
+      ? StandardEither<Awaited<T[number]>, AggregateError>
       : TEitherMode extends "go"
-      ? GoEither<Awaited<T[number]>>
-      : AnyEither<Awaited<T[number]>>
+        ? GoEither<Awaited<T[number]>, AggregateError>
+        : AnyEither<Awaited<T[number]>, AggregateError>
   >
 
   /**
@@ -156,10 +125,9 @@ export interface PromiseStaticMethods<TEitherMode extends EitherMode> {
     values: Iterable<T | PromiseLike<T>>
   ): Promise<
     TEitherMode extends "standard"
-      ? StandardEither<Awaited<T>>
+      ? StandardEither<Awaited<T>, AggregateError>
       : TEitherMode extends "go"
-      ? GoEither<Awaited<T>>
-      : AnyEither<Awaited<T>>
+        ? GoEither<Awaited<T>, AggregateError>
+        : AnyEither<Awaited<T>, AggregateError>
   >
 }
-

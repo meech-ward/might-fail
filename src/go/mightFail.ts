@@ -5,11 +5,11 @@ import { makeProxyHandler } from "../utils/staticMethodsProxy"
 import { MightFail, MightFailFunction } from "../utils/utils.type"
 import { mightFailFunction as standardMightFailFunction } from "../utils/mightFailFunction"
 
-const mightFailFunction: MightFailFunction<"go"> = async function <T>(promise: T) {
+const mightFailFunction: MightFailFunction<"go"> = async function <T, E extends Error = Error>(promise: T) {
   const { result, error } = await standardMightFailFunction(promise)
   return error
-    ? createEither<Awaited<T>, "go">({ result: undefined, error }, "go")
-    : createEither<Awaited<T>, "go">({ result, error: undefined }, "go")
+    ? createEither<Awaited<T>, E, "go">({ result: undefined, error: error as E }, "go")
+    : createEither<Awaited<T>, E, "go">({ result, error: undefined }, "go")
 }
 
 /**
@@ -71,11 +71,11 @@ export const mightFail: MightFail<"go"> = new Proxy(
  * }
  * console.log('Parsed object:', result);
  */
-export function mightFailSync<T>(func: () => T): Either<T> {
+export function mightFailSync<T, E extends Error = Error>(func: () => T): Either<T, E> {
   const { result, error } = standard.mightFailSync(func)
   return error
-    ? createEither<T, "go">({ result: undefined, error }, "go")
-    : createEither<T, "go">({ result, error: undefined }, "go")
+    ? createEither<T, E, "go">({ result: undefined, error: error as E }, "go")
+    : createEither<T, E, "go">({ result, error: undefined }, "go")
 }
 
 /**
@@ -84,9 +84,9 @@ export function mightFailSync<T>(func: () => T): Either<T> {
  * @param result
  * @constructor
  */
-export function Might<T>(result: T): Either<T> {
+export function Might<T>(result: T): Either<T, Error> {
   const standardMight = standard.Might<T>(result)
-  return createEither<T, "go">({ result: standardMight.result as T, error: undefined }, "go")
+  return createEither<T, Error, "go">({ result: standardMight.result as T, error: undefined }, "go")
 }
 
 /**
@@ -97,7 +97,7 @@ export function Might<T>(result: T): Either<T> {
  * @param error
  * @constructor
  */
-export function Fail(error: unknown): Either<undefined> {
+export function Fail<E extends Error = Error>(error: unknown): Either<undefined, E> {
   const standardFail = standard.Fail(error)
-  return createEither<undefined, "go">({ result: undefined, error: standardFail.error }, "go")
+  return createEither<undefined, E, "go">({ result: undefined, error: standardFail.error! as E }, "go")
 }

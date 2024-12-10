@@ -89,25 +89,12 @@ describe("promise concurrent method wrappers", () => {
     })
   })
 
-  describe("mightFail.allSettled", () => {
-    it("should resolve with all settled results, including fulfilled and rejected promises", async () => {
-      const promises = [Promise.resolve(1), Promise.reject(new Error("AllSettled Error")), Promise.resolve(3)]
-      const [result, error] = await mightFail.allSettled(promises)
-      expect(result).toEqual([
-        { status: "fulfilled", value: 1 },
-        { status: "rejected", reason: new Error("AllSettled Error") },
-        { status: "fulfilled", value: 3 },
-      ])
-      expect(error).toBeUndefined()
-    })
-  })
-
   describe("mightFail.any", () => {
     it("should resolve with the first successful promise", async () => {
       const promises = [
         Promise.reject(new Error("Error 1")),
         Promise.resolve(200),
-        Promise.reject(new Error("Error 2")),
+        Promise.reject(new Error("Error 2"))
       ]
       const [result, error] = await mightFail.any(promises)
       expect(result).toBe(200)
