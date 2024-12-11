@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.7.3] - 2024-12-11
+
+### Changed
+- Fixed the error type to make it more generic and consistent with TS: https://github.com/might-fail/ts/issues/20
+
 ## [0.7.2] - 2024-11-30
 
 ### Changed
